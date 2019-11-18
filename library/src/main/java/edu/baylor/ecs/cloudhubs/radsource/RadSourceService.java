@@ -2,6 +2,7 @@ package edu.baylor.ecs.cloudhubs.radsource;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -20,6 +21,7 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeS
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceRequestContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceResponseContext;
+import edu.baylor.ecs.cloudhubs.radsource.context.RestCall;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,9 +32,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -44,6 +44,10 @@ public class RadSourceService {
             "postForObject", "postForLocation",
             "delete", "put", "exchange"
     );
+
+    Map<String, String> restTemplateMethodMap = new HashMap<String, String>() {{
+        put("getForObject", "GET");
+    }};
 
     public RadSourceResponseContext generateRadSourceResponseContext(RadSourceRequestContext request) throws IOException {
         RadSourceResponseContext responseContext = new RadSourceResponseContext();
@@ -68,17 +72,20 @@ public class RadSourceService {
 
         // loop through class declarations
         for (ClassOrInterfaceDeclaration cid : cu.findAll(ClassOrInterfaceDeclaration.class)) {
-            log.info("class: " + cid.getNameAsString());
+            String className = cid.getNameAsString();
+            log.info("class: " + className);
 
             // loop through methods
             for (MethodDeclaration md : cid.findAll(MethodDeclaration.class)) {
-                log.info("method: " + md.getNameAsString());
+                String methodName = md.getNameAsString();
+                log.info("method: " + methodName);
 
                 // loop through method calls
                 for (MethodCallExpr mce : md.findAll(MethodCallExpr.class)) {
-                    if (restTemplateMethods.contains(mce.getNameAsString())) {
+                    String methodCall = mce.getNameAsString();
 
-                        log.info("method-call: " + mce.getNameAsString());
+                    if (restTemplateMethodMap.containsKey(methodCall)) {
+                        log.info("method-call: " + methodCall);
 
                         Expression scope = mce.getScope().orElse(null);
 
@@ -89,7 +96,39 @@ public class RadSourceService {
                             log.info("field-access: " + scope.asFieldAccessExpr().getNameAsString());
 
                             // everything matched here
+
+                            // find return type
+
                             log.info("arguments: " + mce.getArguments());
+
+                            String returnType = null;
+                            boolean isCollection = false;
+
+                            for (Expression ex : mce.getArguments()) {
+                                String param = ex.toString();
+
+                                if (param.endsWith(".class")) {
+                                    param = param.replace(".class", "");
+                                } else {
+                                    continue;
+                                }
+
+                                if (param.endsWith("[]")) {
+                                    param = param.replace("[]", "");
+                                    isCollection = true;
+                                }
+
+                                log.info("param: " + param);
+                                returnType = findFQClassName(cu, param);
+                            }
+
+                            // construct rest call
+
+                            RestCall restCall = new RestCall();
+                            restCall.setParentMethod(packageName + "." + className + "." + methodName);
+                            restCall.setHttpMethod(restTemplateMethodMap.get(methodCall));
+                            restCall.setReturnType(returnType);
+                            restCall.setCollection(isCollection);
                         }
 
                     }
@@ -98,19 +137,13 @@ public class RadSourceService {
         }
     }
 
-    private String getParamType(String param) {
-        boolean isList = false;
-        if (param.endsWith("[].class")) {
-            isList = true;
-            param = param.replace("[].class", "");
-        } else if (param.endsWith(".class")) {
-            param = param.replace(".class", "");
-        } else {
-            return null;
+    private String findFQClassName(CompilationUnit cu, String param) {
+        for (ImportDeclaration id : cu.findAll(ImportDeclaration.class)) {
+            if (id.getNameAsString().endsWith(param)) {
+                log.info("import: " + id.getNameAsString());
+            }
         }
-
-        // TODO: resolve type from imports
-        return param;
+        return null;
     }
 
     private boolean matchFieldType(ClassOrInterfaceDeclaration cid, String fieldName, String type) {
