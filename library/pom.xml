@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -50,9 +50,16 @@
         </dependency>
 
         <dependency>
-            <groupId>edu.baylor.ecs.seer</groupId>
-            <artifactId>local-weaver</artifactId>
-            <version>0.2.1</version>
+            <groupId>edu.baylor.ecs.cil</groupId>
+            <artifactId>cil-jssa</artifactId>
+            <version>0.0.2</version>
+        </dependency>
+
+        <!-- JavaParser itself is not a dependency here. It gets included indirectly through java-symbol-solver-core -->
+        <dependency>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-symbol-solver-core</artifactId>
+            <version>3.14.5</version>
         </dependency>
 
     </dependencies>
