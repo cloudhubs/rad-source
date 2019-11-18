@@ -1,6 +1,6 @@
 package edu.baylor.ecs.cloudhubs.radsource.app;
 
-import edu.baylor.ecs.cloudhubs.radsource.RadSourceService;
+import edu.baylor.ecs.cloudhubs.radsource.service.RadSourceService;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceRequestContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceResponseContext;
 import lombok.AllArgsConstructor;
