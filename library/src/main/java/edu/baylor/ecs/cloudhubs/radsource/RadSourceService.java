@@ -62,6 +62,12 @@ public class RadSourceService {
 
         CompilationUnit cu = StaticJavaParser.parse(new File(filePath));
 
+        // don't analyse further if no RestTemplate import exists
+        if (!hasRestTemplateImport(cu)) {
+            log.debug("no RestTemplate found");
+            return restCalls;
+        }
+
         String packageName = findPackage(cu);
         log.debug("package: " + packageName);
 
@@ -88,7 +94,7 @@ public class RadSourceService {
 
                         // match field access
                         if (scope != null && scope.isFieldAccessExpr() &&
-                                matchFieldType(cid, scope.asFieldAccessExpr().getNameAsString())) {
+                                isRestTemplateField(cid, scope.asFieldAccessExpr().getNameAsString())) {
 
                             log.debug("field-access: " + scope.asFieldAccessExpr().getNameAsString());
 
@@ -154,7 +160,16 @@ public class RadSourceService {
         return param; // if FQ name not found then return original
     }
 
-    private boolean matchFieldType(ClassOrInterfaceDeclaration cid, String fieldName) {
+    private boolean hasRestTemplateImport(CompilationUnit cu) {
+        for (ImportDeclaration id : cu.findAll(ImportDeclaration.class)) {
+            if (id.getNameAsString().equals("org.springframework.web.client.RestTemplate")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isRestTemplateField(ClassOrInterfaceDeclaration cid, String fieldName) {
         for (FieldDeclaration fd : cid.findAll(FieldDeclaration.class)) {
             if (fd.getElementType().toString().equals("RestTemplate") &&
                     fd.getVariables().toString().contains(fieldName)) {
@@ -165,11 +180,11 @@ public class RadSourceService {
         return false;
     }
 
-    private List<String> findAllFieldsOfType(ClassOrInterfaceDeclaration cid, String type) {
+    private List<String> findAllRestTemplateFields(ClassOrInterfaceDeclaration cid) {
         List<String> fields = new ArrayList<>();
 
         for (FieldDeclaration fd : cid.findAll(FieldDeclaration.class)) {
-            if (fd.getElementType().toString().equals(type)) {
+            if (fd.getElementType().toString().equals("RestTemplate")) {
                 for (VariableDeclarator variable : fd.getVariables()) {
                     fields.add(variable.getNameAsString());
                 }
