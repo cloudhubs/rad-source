@@ -63,17 +63,17 @@ public class RadSourceService {
         CompilationUnit cu = StaticJavaParser.parse(new File(filePath));
 
         String packageName = findPackage(cu);
-        log.info("package: " + packageName);
+        log.debug("package: " + packageName);
 
         // loop through class declarations
         for (ClassOrInterfaceDeclaration cid : cu.findAll(ClassOrInterfaceDeclaration.class)) {
             String className = cid.getNameAsString();
-            log.info("class: " + className);
+            log.debug("class: " + className);
 
             // loop through methods
             for (MethodDeclaration md : cid.findAll(MethodDeclaration.class)) {
                 String methodName = md.getNameAsString();
-                log.info("method: " + methodName);
+                log.debug("method: " + methodName);
 
                 // loop through method calls
                 for (MethodCallExpr mce : md.findAll(MethodCallExpr.class)) {
@@ -82,32 +82,30 @@ public class RadSourceService {
                     RestTemplateMethod restTemplateMethod = RestTemplateMethod.findByName(methodCall);
 
                     if (restTemplateMethod != null) {
-                        log.info("method-call: " + methodCall);
+                        log.debug("method-call: " + methodCall);
 
                         Expression scope = mce.getScope().orElse(null);
 
                         // match field access
                         if (scope != null && scope.isFieldAccessExpr() &&
-                                matchFieldType(cid, scope.asFieldAccessExpr().getNameAsString(), "RestTemplate")) {
+                                matchFieldType(cid, scope.asFieldAccessExpr().getNameAsString())) {
 
-                            log.info("field-access: " + scope.asFieldAccessExpr().getNameAsString());
+                            log.debug("field-access: " + scope.asFieldAccessExpr().getNameAsString());
 
                             // everything matched here
 
                             // find return type
 
-                            log.info("arguments: " + mce.getArguments());
+                            log.debug("arguments: " + mce.getArguments());
 
                             String returnType = null;
                             boolean isCollection = false;
 
-                            for (Expression ex : mce.getArguments()) {
-                                String param = ex.toString();
+                            if (mce.getArguments().size() > restTemplateMethod.getResponseTypeIndex()) {
+                                String param = mce.getArguments().get(restTemplateMethod.getResponseTypeIndex()).toString();
 
                                 if (param.endsWith(".class")) {
                                     param = param.replace(".class", "");
-                                } else {
-                                    continue;
                                 }
 
                                 if (param.endsWith("[]")) {
@@ -115,7 +113,7 @@ public class RadSourceService {
                                     isCollection = true;
                                 }
 
-                                log.info("param: " + param);
+                                log.debug("param: " + param);
                                 returnType = findFQClassName(cu, param);
                             }
 
@@ -127,7 +125,7 @@ public class RadSourceService {
                             restCall.setReturnType(returnType);
                             restCall.setCollection(isCollection);
 
-                            log.info("rest-call: " + restCall);
+                            log.debug("rest-call: " + restCall);
                             restCalls.add(restCall);
                         }
 
@@ -140,18 +138,25 @@ public class RadSourceService {
     }
 
     private String findFQClassName(CompilationUnit cu, String param) {
+        if (param.equals("String")) {
+            return "java.lang.String";
+        } else if (param.equals("Object")) {
+            return "java.lang.Object";
+        }
+
         for (ImportDeclaration id : cu.findAll(ImportDeclaration.class)) {
             if (id.getNameAsString().endsWith(param)) {
-                log.info("import: " + id.getNameAsString());
+                log.debug("import: " + id.getNameAsString());
                 return id.getNameAsString();
             }
         }
-        return null;
+
+        return param; // if FQ name not found then return original
     }
 
-    private boolean matchFieldType(ClassOrInterfaceDeclaration cid, String fieldName, String type) {
+    private boolean matchFieldType(ClassOrInterfaceDeclaration cid, String fieldName) {
         for (FieldDeclaration fd : cid.findAll(FieldDeclaration.class)) {
-            if (fd.getElementType().toString().equals(type) &&
+            if (fd.getElementType().toString().equals("RestTemplate") &&
                     fd.getVariables().toString().contains(fieldName)) {
 
                 return true;
@@ -202,7 +207,7 @@ public class RadSourceService {
             SymbolReference<ResolvedMethodDeclaration> ref = javaParserFacade.solve(be);
 
             if (ref.isSolved()) {
-                log.info(ref.getCorrespondingDeclaration().getQualifiedSignature());
+                log.debug(ref.getCorrespondingDeclaration().getQualifiedSignature());
             }
         });
     }
