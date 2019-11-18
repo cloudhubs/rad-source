@@ -22,6 +22,7 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeS
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceRequestContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceResponseContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RestCall;
+import edu.baylor.ecs.cloudhubs.radsource.model.RestTemplateMethod;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,22 +33,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class RadSourceService {
-    private final List<String> restTemplateMethods = Arrays.asList(
-            "getForObject", "getForEntity",
-            "postForObject", "postForLocation",
-            "delete", "put", "exchange"
-    );
-
-    Map<String, String> restTemplateMethodMap = new HashMap<String, String>() {{
-        put("getForObject", "GET");
-    }};
 
     public RadSourceResponseContext generateRadSourceResponseContext(RadSourceRequestContext request) throws IOException {
         RadSourceResponseContext responseContext = new RadSourceResponseContext();
@@ -59,7 +52,9 @@ public class RadSourceService {
         return responseContext;
     }
 
-    private void testTypeSolver(String filePath) throws FileNotFoundException {
+    private List<RestCall> testTypeSolver(String filePath) throws FileNotFoundException {
+        List<RestCall> restCalls = new ArrayList<>();
+
         TypeSolver typeSolver = new CombinedTypeSolver();
 
         JavaSymbolSolver symbolSolver = new JavaSymbolSolver(typeSolver);
@@ -84,7 +79,9 @@ public class RadSourceService {
                 for (MethodCallExpr mce : md.findAll(MethodCallExpr.class)) {
                     String methodCall = mce.getNameAsString();
 
-                    if (restTemplateMethodMap.containsKey(methodCall)) {
+                    RestTemplateMethod restTemplateMethod = RestTemplateMethod.findByName(methodCall);
+
+                    if (restTemplateMethod != null) {
                         log.info("method-call: " + methodCall);
 
                         Expression scope = mce.getScope().orElse(null);
@@ -126,21 +123,27 @@ public class RadSourceService {
 
                             RestCall restCall = new RestCall();
                             restCall.setParentMethod(packageName + "." + className + "." + methodName);
-                            restCall.setHttpMethod(restTemplateMethodMap.get(methodCall));
+                            restCall.setHttpMethod(restTemplateMethod.getHttpMethod().toString());
                             restCall.setReturnType(returnType);
                             restCall.setCollection(isCollection);
+
+                            log.info("rest-call: " + restCall);
+                            restCalls.add(restCall);
                         }
 
                     }
                 }
             }
         }
+
+        return restCalls;
     }
 
     private String findFQClassName(CompilationUnit cu, String param) {
         for (ImportDeclaration id : cu.findAll(ImportDeclaration.class)) {
             if (id.getNameAsString().endsWith(param)) {
                 log.info("import: " + id.getNameAsString());
+                return id.getNameAsString();
             }
         }
         return null;
