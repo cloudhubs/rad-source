@@ -1,5 +1,6 @@
 package edu.baylor.ecs.cloudhubs.radsource.context;
 
+import edu.baylor.ecs.ciljssa.context.AnalysisContext;
 import lombok.*;
 
 @Getter
@@ -9,4 +10,5 @@ import lombok.*;
 @NoArgsConstructor
 public class RadSourceResponseContext {
     private RadSourceRequestContext request;
+    private AnalysisContext result;
 }
