@@ -66,38 +66,16 @@ public class RestCallService {
 
                             // everything matched here
 
-                            // find return type
-
-                            log.debug("arguments: " + mce.getArguments());
-
-                            String returnType = null;
-                            boolean isCollection = false;
-
-                            if (mce.getArguments().size() > restTemplateMethod.getResponseTypeIndex()) {
-                                String param = mce.getArguments().get(restTemplateMethod.getResponseTypeIndex()).toString();
-
-                                if (param.endsWith(".class")) {
-                                    param = param.replace(".class", "");
-                                }
-
-                                if (param.endsWith("[]")) {
-                                    param = param.replace("[]", "");
-                                    isCollection = true;
-                                }
-
-                                log.debug("param: " + param);
-                                returnType = findFQClassName(cu, param);
-                            }
-
                             // construct rest call
-
                             RestCall restCall = new RestCall();
                             restCall.setParentMethod(packageName + "." + className + "." + methodName);
                             restCall.setHttpMethod(restTemplateMethod.getHttpMethod().toString());
-                            restCall.setReturnType(returnType);
-                            restCall.setCollection(isCollection);
 
+                            // find return type
+                            resolveReturnType(restCall, cu, mce, restTemplateMethod);
                             log.debug("rest-call: " + restCall);
+
+                            // add to list of restCall
                             restCalls.add(restCall);
                         }
                     }
@@ -113,6 +91,33 @@ public class RestCallService {
             return pd.getNameAsString();
         }
         return null;
+    }
+
+    // populate return type in restCall
+    private void resolveReturnType(RestCall restCall, CompilationUnit cu, MethodCallExpr mce, RestTemplateMethod restTemplateMethod) {
+        log.debug("arguments: " + mce.getArguments());
+
+        String returnType = null;
+        boolean isCollection = false;
+
+        if (mce.getArguments().size() > restTemplateMethod.getResponseTypeIndex()) {
+            String param = mce.getArguments().get(restTemplateMethod.getResponseTypeIndex()).toString();
+
+            if (param.endsWith(".class")) {
+                param = param.replace(".class", "");
+            }
+
+            if (param.endsWith("[]")) {
+                param = param.replace("[]", "");
+                isCollection = true;
+            }
+
+            log.debug("param: " + param);
+            returnType = findFQClassName(cu, param);
+        }
+
+        restCall.setReturnType(returnType);
+        restCall.setCollection(isCollection);
     }
 
     private String findFQClassName(CompilationUnit cu, String param) {
