@@ -89,12 +89,28 @@ public class RadSourceService {
                             log.info("field-access: " + scope.asFieldAccessExpr().getNameAsString());
 
                             // everything matched here
+                            log.info("arguments: " + mce.getArguments());
                         }
 
                     }
                 }
             }
         }
+    }
+
+    private String getParamType(String param) {
+        boolean isList = false;
+        if (param.endsWith("[].class")) {
+            isList = true;
+            param = param.replace("[].class", "");
+        } else if (param.endsWith(".class")) {
+            param = param.replace(".class", "");
+        } else {
+            return null;
+        }
+
+        // TODO: resolve type from imports
+        return param;
     }
 
     private boolean matchFieldType(ClassOrInterfaceDeclaration cid, String fieldName, String type) {
