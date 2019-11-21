@@ -16,22 +16,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Slf4j
 public class RestCallService {
-    public List<RestCall> findRestCalls(String filePath) throws FileNotFoundException {
+    public List<RestCall> findRestCalls(File sourceFile) throws IOException {
         List<RestCall> restCalls = new ArrayList<>();
 
-        CompilationUnit cu = StaticJavaParser.parse(new File(filePath));
+        CompilationUnit cu = StaticJavaParser.parse(sourceFile);
 
         // don't analyse further if no RestTemplate import exists
         if (!hasRestTemplateImport(cu)) {
             log.debug("no RestTemplate found");
-            return restCalls;
+            return null;
         }
 
         String packageName = findPackage(cu);
@@ -68,6 +68,7 @@ public class RestCallService {
 
                             // construct rest call
                             RestCall restCall = new RestCall();
+                            restCall.setSource(sourceFile.getCanonicalPath().toString());
                             restCall.setParentMethod(packageName + "." + className + "." + methodName);
                             restCall.setHttpMethod(restTemplateMethod.getHttpMethod().toString());
 

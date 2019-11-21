@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class RestCall {
+    private String source;
     private String httpMethod;
     private String parentMethod;
     private String returnType;
