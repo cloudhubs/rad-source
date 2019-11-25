@@ -44,6 +44,7 @@ public class RadSourceService {
         }
 
         responseContext.setRestCalls(restCalls);
+        responseContext.setRestEndpoints(restEndpoints);
 
         return responseContext;
     }
