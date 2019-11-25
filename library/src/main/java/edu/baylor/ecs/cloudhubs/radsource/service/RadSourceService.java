@@ -19,12 +19,14 @@ import java.util.List;
 public class RadSourceService {
     private final RestCallService restCallService;
     private final RestEndpointService restEndpointService;
+    private final RestFlowService restFlowService;
 
     // no args constructor
     // initialize restCallService manually
     public RadSourceService() {
         this.restCallService = new RestCallService();
         this.restEndpointService = new RestEndpointService();
+        this.restFlowService = new RestFlowService();
     }
 
     public RadSourceResponseContext generateRadSourceResponseContext(RadSourceRequestContext request) throws IOException {
@@ -37,12 +39,15 @@ public class RadSourceService {
             restEntityContexts.add(generateRestEntityContext(pathToMsRoot));
         }
 
+        List<RestFlow> restFlows = restFlowService.findRestFlows(restEntityContexts);
+
         responseContext.setRestEntityContexts(restEntityContexts);
+        responseContext.setRestFlows(restFlows);
 
         return responseContext;
     }
 
-    public RestEntityContext generateRestEntityContext(String pathToMsRoot) throws IOException {
+    private RestEntityContext generateRestEntityContext(String pathToMsRoot) throws IOException {
         RestEntityContext restEntityContext = new RestEntityContext();
         restEntityContext.setPathToMsRoot(pathToMsRoot);
 

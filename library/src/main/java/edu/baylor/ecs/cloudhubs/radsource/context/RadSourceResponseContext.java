@@ -12,4 +12,5 @@ import java.util.List;
 public class RadSourceResponseContext {
     private RadSourceRequestContext request;
     private List<RestEntityContext> restEntityContexts;
+    private List<RestFlow> restFlows;
 }
