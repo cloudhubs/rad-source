@@ -3,7 +3,6 @@ package edu.baylor.ecs.cloudhubs.radsource.service;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
-import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -34,7 +33,7 @@ public class RestCallService {
             return null;
         }
 
-        String packageName = findPackage(cu);
+        String packageName = Helper.findPackage(cu);
         log.debug("package: " + packageName);
 
         // loop through class declarations
@@ -68,7 +67,7 @@ public class RestCallService {
 
                             // construct rest call
                             RestCall restCall = new RestCall();
-                            restCall.setSource(sourceFile.getCanonicalPath().toString());
+                            restCall.setSource(sourceFile.getCanonicalPath());
                             restCall.setParentMethod(packageName + "." + className + "." + methodName);
                             restCall.setHttpMethod(restTemplateMethod.getHttpMethod().toString());
 
@@ -85,13 +84,6 @@ public class RestCallService {
         }
 
         return restCalls;
-    }
-
-    private String findPackage(CompilationUnit cu) {
-        for (PackageDeclaration pd : cu.findAll(PackageDeclaration.class)) {
-            return pd.getNameAsString();
-        }
-        return null;
     }
 
     // populate return type in restCall
@@ -114,28 +106,11 @@ public class RestCallService {
             }
 
             log.debug("param: " + param);
-            returnType = findFQClassName(cu, param);
+            returnType = Helper.findFQClassName(cu, param);
         }
 
         restCall.setReturnType(returnType);
         restCall.setCollection(isCollection);
-    }
-
-    private String findFQClassName(CompilationUnit cu, String param) {
-        if (param.equals("String")) {
-            return "java.lang.String";
-        } else if (param.equals("Object")) {
-            return "java.lang.Object";
-        }
-
-        for (ImportDeclaration id : cu.findAll(ImportDeclaration.class)) {
-            if (id.getNameAsString().endsWith(param)) {
-                log.debug("import: " + id.getNameAsString());
-                return id.getNameAsString();
-            }
-        }
-
-        return param; // if FQ name not found then return original
     }
 
     private boolean hasRestTemplateImport(CompilationUnit cu) {
