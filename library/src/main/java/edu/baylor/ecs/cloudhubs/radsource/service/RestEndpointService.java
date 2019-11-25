@@ -26,7 +26,7 @@ public class RestEndpointService {
         // don't analyse further if no RestController import exists
         if (!hasRestControllerImport(cu)) {
             log.debug("no RestController found");
-            return null;
+            return restEndpoints;
         }
 
         String packageName = Helper.findPackage(cu);

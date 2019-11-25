@@ -30,7 +30,7 @@ public class RestCallService {
         // don't analyse further if no RestTemplate import exists
         if (!hasRestTemplateImport(cu)) {
             log.debug("no RestTemplate found");
-            return null;
+            return restCalls;
         }
 
         String packageName = Helper.findPackage(cu);
