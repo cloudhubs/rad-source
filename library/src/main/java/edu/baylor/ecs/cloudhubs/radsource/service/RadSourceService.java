@@ -1,9 +1,6 @@
 package edu.baylor.ecs.cloudhubs.radsource.service;
 
-import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceRequestContext;
-import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceResponseContext;
-import edu.baylor.ecs.cloudhubs.radsource.context.RestCall;
-import edu.baylor.ecs.cloudhubs.radsource.context.RestEndpoint;
+import edu.baylor.ecs.cloudhubs.radsource.context.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -34,19 +31,33 @@ public class RadSourceService {
         RadSourceResponseContext responseContext = new RadSourceResponseContext();
         responseContext.setRequest(request);
 
-        String filePath = request.getPathToSource();
+        List<RestEntityContext> restEntityContexts = new ArrayList<>();
+
+        for (String pathToMsRoot : request.getPathToMsRoots()) {
+            restEntityContexts.add(generateRestEntityContext(pathToMsRoot));
+        }
+
+        responseContext.setRestEntityContexts(restEntityContexts);
+
+        return responseContext;
+    }
+
+    public RestEntityContext generateRestEntityContext(String pathToMsRoot) throws IOException {
+        RestEntityContext restEntityContext = new RestEntityContext();
+        restEntityContext.setPathToMsRoot(pathToMsRoot);
+
         List<RestCall> restCalls = new ArrayList<>();
         List<RestEndpoint> restEndpoints = new ArrayList<>();
 
-        for (File sourceFile : getSourceFiles(filePath)) {
+        for (File sourceFile : getSourceFiles(pathToMsRoot)) {
             restCalls.addAll(restCallService.findRestCalls(sourceFile));
             restEndpoints.addAll(restEndpointService.findRestEndpoints(sourceFile));
         }
 
-        responseContext.setRestCalls(restCalls);
-        responseContext.setRestEndpoints(restEndpoints);
+        restEntityContext.setRestCalls(restCalls);
+        restEntityContext.setRestEndpoints(restEndpoints);
 
-        return responseContext;
+        return restEntityContext;
     }
 
     private List<File> getSourceFiles(String directoryOrFile) {

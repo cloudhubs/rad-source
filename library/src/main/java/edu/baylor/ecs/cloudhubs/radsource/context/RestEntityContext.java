@@ -9,7 +9,8 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class RadSourceResponseContext {
-    private RadSourceRequestContext request;
-    private List<RestEntityContext> restEntityContexts;
+public class RestEntityContext {
+    String pathToMsRoot;
+    private List<RestCall> restCalls;
+    private List<RestEndpoint> restEndpoints;
 }
