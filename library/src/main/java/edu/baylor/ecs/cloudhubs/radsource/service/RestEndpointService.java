@@ -95,6 +95,9 @@ public class RestEndpointService {
         if (returnType.startsWith("List<") && returnType.endsWith(">")) {
             returnType = returnType.replace("List<", "").replace(">", "");
             restEndpoint.setCollection(true);
+        } else if (returnType.endsWith("[]")) {
+            returnType = returnType.replace("[]", "");
+            restEndpoint.setCollection(true);
         }
 
         restEndpoint.setReturnType(Helper.findFQClassName(cu, returnType));
