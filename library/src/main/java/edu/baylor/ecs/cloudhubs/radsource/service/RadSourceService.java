@@ -3,6 +3,7 @@ package edu.baylor.ecs.cloudhubs.radsource.service;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceRequestContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceResponseContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RestCall;
+import edu.baylor.ecs.cloudhubs.radsource.context.RestEndpoint;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -20,6 +21,14 @@ import java.util.List;
 @Slf4j
 public class RadSourceService {
     private final RestCallService restCallService;
+    private final RestEndpointService restEndpointService;
+
+    // no args constructor
+    // initialize restCallService manually
+    public RadSourceService() {
+        this.restCallService = new RestCallService();
+        this.restEndpointService = new RestEndpointService();
+    }
 
     public RadSourceResponseContext generateRadSourceResponseContext(RadSourceRequestContext request) throws IOException {
         RadSourceResponseContext responseContext = new RadSourceResponseContext();
@@ -27,9 +36,11 @@ public class RadSourceService {
 
         String filePath = request.getPathToSource();
         List<RestCall> restCalls = new ArrayList<>();
+        List<RestEndpoint> restEndpoints = new ArrayList<>();
 
         for (File sourceFile : getSourceFiles(filePath)) {
             restCalls.addAll(restCallService.findRestCalls(sourceFile));
+            restEndpoints.addAll(restEndpointService.findRestEndpoints(sourceFile));
         }
 
         responseContext.setRestCalls(restCalls);
