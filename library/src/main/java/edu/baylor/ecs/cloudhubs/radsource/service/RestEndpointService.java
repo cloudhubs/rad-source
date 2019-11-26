@@ -6,7 +6,7 @@ import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
-import edu.baylor.ecs.cloudhubs.radsource.context.RestEndpoint;
+import edu.baylor.ecs.cloudhubs.radsource.model.RestEndpoint;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

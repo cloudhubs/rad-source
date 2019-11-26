@@ -1,5 +1,7 @@
 package edu.baylor.ecs.cloudhubs.radsource.context;
 
+import edu.baylor.ecs.cloudhubs.radsource.model.RestCall;
+import edu.baylor.ecs.cloudhubs.radsource.model.RestEndpoint;
 import lombok.*;
 
 import java.util.List;

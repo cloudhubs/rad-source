@@ -9,7 +9,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import edu.baylor.ecs.cloudhubs.radsource.context.RestCall;
+import edu.baylor.ecs.cloudhubs.radsource.model.RestCall;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestTemplateMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

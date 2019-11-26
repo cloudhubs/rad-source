@@ -1,4 +1,4 @@
-package edu.baylor.ecs.cloudhubs.radsource.context;
+package edu.baylor.ecs.cloudhubs.radsource.model;
 
 import lombok.*;
 

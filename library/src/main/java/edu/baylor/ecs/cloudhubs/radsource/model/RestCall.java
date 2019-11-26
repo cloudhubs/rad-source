@@ -1,4 +1,4 @@
-package edu.baylor.ecs.cloudhubs.radsource.context;
+package edu.baylor.ecs.cloudhubs.radsource.model;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class RestEndpoint {
+public class RestCall {
     private String source;
     private String httpMethod;
     private String parentMethod;
