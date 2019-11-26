@@ -12,6 +12,7 @@ public class RestEndpoint {
     private String source;
     private String httpMethod;
     private String parentMethod;
+    private String arguments;
     private String returnType;
     private boolean isCollection;
 }

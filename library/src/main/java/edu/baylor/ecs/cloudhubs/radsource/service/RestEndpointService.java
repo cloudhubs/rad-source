@@ -72,6 +72,7 @@ public class RestEndpointService {
                     }
 
                     resolveReturnTypeForMethodDeclaration(cu, md, restEndpoint);
+                    resolveArgumentsForMethodDeclaration(cu, md, restEndpoint);
 
                     restEndpoint.setSource(sourceFile.getCanonicalPath());
                     restEndpoint.setParentMethod(packageName + "." + className + "." + methodName);
@@ -101,6 +102,14 @@ public class RestEndpointService {
         }
 
         restEndpoint.setReturnType(Helper.findFQClassName(cu, returnType));
+    }
+
+    // populate arguments in restEndpoint
+    // TODO: find FQ name?
+    private void resolveArgumentsForMethodDeclaration(CompilationUnit cu, MethodDeclaration md, RestEndpoint restEndpoint) {
+        String arguments = md.getParameters().toString();
+        log.debug("arguments: " + arguments);
+        restEndpoint.setArguments(arguments);
     }
 
     private boolean hasRestControllerImport(CompilationUnit cu) {
