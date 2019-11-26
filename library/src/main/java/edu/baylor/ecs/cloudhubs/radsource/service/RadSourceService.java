@@ -1,6 +1,8 @@
 package edu.baylor.ecs.cloudhubs.radsource.service;
 
-import edu.baylor.ecs.cloudhubs.radsource.context.*;
+import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceRequestContext;
+import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceResponseContext;
+import edu.baylor.ecs.cloudhubs.radsource.context.RestEntityContext;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestCall;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestEndpoint;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestFlow;
@@ -61,6 +63,10 @@ public class RadSourceService {
             restCalls.addAll(restCallService.findRestCalls(sourceFile));
             restEndpoints.addAll(restEndpointService.findRestEndpoints(sourceFile));
         }
+
+        // add msRoot to all restCalls and restEndpoints
+        restCalls.forEach(e -> e.setMsRoot(pathToMsRoot));
+        restEndpoints.forEach(e -> e.setMsRoot(pathToMsRoot));
 
         restEntityContext.setRestCalls(restCalls);
         restEntityContext.setRestEndpoints(restEndpoints);

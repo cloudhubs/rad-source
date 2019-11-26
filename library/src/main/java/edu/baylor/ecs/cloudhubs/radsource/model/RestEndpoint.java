@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class RestEndpoint {
+    private String msRoot;
     private String source;
     private String httpMethod;
     private String parentMethod;
