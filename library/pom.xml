@@ -50,16 +50,9 @@
         </dependency>
 
         <dependency>
-            <groupId>edu.baylor.ecs.cil</groupId>
-            <artifactId>cil-jssa</artifactId>
-            <version>0.0.2</version>
-        </dependency>
-
-        <!-- JavaParser itself is not a dependency here. It gets included indirectly through java-symbol-solver-core -->
-        <dependency>
             <groupId>com.github.javaparser</groupId>
-            <artifactId>javaparser-symbol-solver-core</artifactId>
-            <version>3.14.5</version>
+            <artifactId>javaparser-core</artifactId>
+            <version>3.15.5</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
@@ -68,7 +61,6 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
-
 
     </dependencies>
 
