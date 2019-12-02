@@ -1,6 +1,7 @@
 # RAD Source
 
-This project detects the REST clients (API calls) using static source code analysis for JAVA Spring Boot projects.
+This project detects the REST endpoints and clients (API calls) using static source code analysis for JAVA Spring Boot projects.
+For multiple microservices, it also finds the rest communication between the microservices. 
 
 To get started clone the Github [repository](https://github.com/cloudhubs/rad-source).
 
@@ -16,9 +17,13 @@ $ git clone https://github.com/cloudhubs/rad-source.git
 
 ## Core Components
 
-1. **RadSourceService:** Takes path of a single JAVA source file or, a directory as input. If input is a directory then it scans all java source files recursively and for each of them runs `RestCallService`.
+1. **RadSourceService:** Takes a list of paths of a single JAVA source file or, a directory as input. If input is a directory then it scans all java source files recursively and for each of them runs `RestCallService` and `RestEndpointService`.
 
 2. **RestCallService:** Takes a single JAVA source file as input and detects all the rest calls along with their parent method, HTTP type, and return type.
+
+3. **RestEndpointService:** Takes a single JAVA source file as input and detects all the rest endpoints along with their parent method, HTTP type, and return type.
+
+4. **RestFlowService:** Takes a list of `RestCall` and `RestEndpoint` as input and matches them to detect rest communication between microservices.
 
 ## Run the Application
 
