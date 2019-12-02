@@ -94,20 +94,20 @@ $ curl --request POST \
     {
       "client": {
         "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-        "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\UmsService.java",
+        "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\EmsService.java",
         "httpMethod": "GET",
-        "parentMethod": "edu.baylor.ecs.cms.service.UmsService.isEmailValid",
-        "returnType": "java.lang.String",
-        "collection": false
+        "parentMethod": "edu.baylor.ecs.cms.service.EmsService.getQuestionsForExam",
+        "returnType": "edu.baylor.ecs.cms.model.Question",
+        "collection": true
       },
       "endpoint": {
         "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
         "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
         "httpMethod": "GET",
-        "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.finishExam",
-        "arguments": "[@PathVariable(\"id\") Integer id]",
-        "returnType": "java.lang.String",
-        "collection": false
+        "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.listAllQuestionsForExam",
+        "arguments": "[@PathVariable Integer id]",
+        "returnType": "edu.baylor.ecs.ems.model.Question",
+        "collection": true
       }
     },
     ...
