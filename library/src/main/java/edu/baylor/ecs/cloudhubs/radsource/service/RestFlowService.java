@@ -60,8 +60,12 @@ public class RestFlowService {
 
     // match class name instead of FQ name
     private boolean isReturnTypeMatched(String returnTypeA, String returnTypeB) {
-        returnTypeA = returnTypeA.substring(returnTypeA.lastIndexOf('.') + 1);
-        returnTypeB = returnTypeB.substring(returnTypeB.lastIndexOf('.') + 1);
+        if (returnTypeA.contains(".")) {
+            returnTypeA = returnTypeA.substring(returnTypeA.lastIndexOf('.') + 1);
+        }
+        if (returnTypeB.contains(".")) {
+            returnTypeB = returnTypeB.substring(returnTypeB.lastIndexOf('.') + 1);
+        }
         return returnTypeA.equals(returnTypeB);
     }
 }
