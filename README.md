@@ -33,7 +33,7 @@ $ git clone https://github.com/cloudhubs/rad-source.git
 $ git clone https://github.com/cloudhubs/rad-source.git
 $ cd rad-source
 $ mvn clean install -DskipTests
-$ java -jar application/target/rad-source-application-0.0.1-SNAPSHOT.jar
+$ java -jar application/target/rad-source-application-0.0.1.jar
 ```
 
 ### Sample request and response
@@ -47,9 +47,9 @@ $ curl --request POST \
     --cookie JSESSIONID=3AFF4A7EDCBFA4249E1269FDA19A77C9 \
     --data '{
       "pathToMsRoots": [
-  			"C:\\seer-lab\\cil-tms\\tms-cms",
-  			"C:\\seer-lab\\cil-tms\\tms-ems"
-  		]
+            "C:\\seer-lab\\cil-tms\\tms-cms",
+            "C:\\seer-lab\\cil-tms\\tms-ems"
+       ]
   }'
 ```
 
@@ -131,7 +131,7 @@ $ mvn clean install -DskipTests
 <dependency>
     <groupId>edu.baylor.ecs.cloudhubs</groupId>
     <artifactId>rad-source</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 </dependency>
 ```
 

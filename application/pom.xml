@@ -12,7 +12,7 @@
 
     <groupId>edu.baylor.ecs.cloudhubs</groupId>
     <artifactId>rad-source-application</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>edu.baylor.ecs.cloudhubs</groupId>
             <artifactId>rad-source</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
 
     </dependencies>
