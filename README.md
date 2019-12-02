@@ -48,9 +48,6 @@ $ curl --request POST \
   }'
 ```
 
-<details><summary>Response</summary>
-<p>
-
 ```yaml
 {
   "request": {
@@ -71,94 +68,7 @@ $ curl --request POST \
           "returnType": "edu.baylor.ecs.cms.dto.ExamDto",
           "collection": false
         },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\EmsService.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.service.EmsService.getExams",
-          "returnType": "edu.baylor.ecs.cms.model.Exam",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\EmsService.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.service.EmsService.getQuestionsForExam",
-          "returnType": "edu.baylor.ecs.cms.model.Question",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\EmsService.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.service.EmsService.getINITExams",
-          "returnType": "edu.baylor.ecs.cms.model.Exam",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\EmsService.java",
-          "httpMethod": "DELETE",
-          "parentMethod": "edu.baylor.ecs.cms.service.EmsService.deleteINITExam",
-          "returnType": "uri",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\QmsService.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.service.QmsService.getCategoryInfoDtos",
-          "returnType": "java.lang.Object",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\QmsService.java",
-          "httpMethod": "POST",
-          "parentMethod": "edu.baylor.ecs.cms.service.QmsService.createConfiguration",
-          "returnType": "java.lang.Object",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\QmsService.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.service.QmsService.getConfigurations",
-          "returnType": "java.lang.Object",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\UmsService.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.service.UmsService.isEmailValid",
-          "returnType": "java.lang.String",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\UmsService.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.service.UmsService.getAllUsers",
-          "returnType": "java.lang.Object",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\UmsService.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.service.UmsService.getExamineeId",
-          "returnType": "java.lang.String",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\UmsService.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.service.UmsService.getExamineeInfo",
-          "returnType": "edu.baylor.ecs.cms.model.User",
-          "collection": false
-        }
+        ...
       ],
       "restEndpoints": [
         {
@@ -170,203 +80,10 @@ $ curl --request POST \
           "returnType": "java.lang.Object",
           "collection": true
         },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\controller\\ConfigurationController.java",
-          "httpMethod": "POST",
-          "parentMethod": "edu.baylor.ecs.cms.controller.ConfigurationController.createConfiguration",
-          "arguments": "[@RequestBody ConfigurationDto object]",
-          "returnType": "java.lang.Object",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\controller\\ConfigurationController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.controller.ConfigurationController.getConfigurations",
-          "arguments": "[]",
-          "returnType": "java.lang.Object",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\controller\\ExamController.java",
-          "httpMethod": "POST",
-          "parentMethod": "edu.baylor.ecs.cms.controller.ExamController.createExam",
-          "arguments": "[@RequestBody ExamDto object]",
-          "returnType": "java.lang.Object",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.controller.ExamController.isEmailValid",
-          "arguments": "[@PathVariable String email, @RequestHeader(\"Authorization\") String authorication]",
-          "returnType": "edu.baylor.ecs.cms.dto.EmailDto",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.controller.ExamController.getAllUsers",
-          "arguments": "[@RequestHeader(\"Authorization\") String authorication]",
-          "returnType": "java.lang.Object",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.controller.ExamController.getExamDetail",
-          "arguments": "[@PathVariable Integer id]",
-          "returnType": "edu.baylor.ecs.cms.model.Question",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.controller.ExamController.getAllExams",
-          "arguments": "[]",
-          "returnType": "edu.baylor.ecs.cms.model.Exam",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.controller.ExamController.getAllExamsInStatusINIT",
-          "arguments": "[]",
-          "returnType": "edu.baylor.ecs.cms.model.Exam",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\controller\\ExamController.java",
-          "httpMethod": "DELETE",
-          "parentMethod": "edu.baylor.ecs.cms.controller.ExamController.deleteExam",
-          "arguments": "[@PathVariable Integer id]",
-          "returnType": "java.lang.String",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-          "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.cms.controller.ExamController.getExamineeById",
-          "arguments": "[@PathVariable String id, @RequestHeader(\"Authorization\") String auth]",
-          "returnType": "edu.baylor.ecs.cms.model.User",
-          "collection": false
-        }
+        ...
       ]
     },
-    {
-      "pathToMsRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-      "restCalls": [
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\service\\QmsService.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.ems.service.QmsService.getQuestions",
-          "returnType": "new ParameterizedTypeReference<List<QuestionQmsDto>>() {\r\n}",
-          "collection": false
-        }
-      ],
-      "restEndpoints": [
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ChoiceController.java",
-          "httpMethod": "POST",
-          "parentMethod": "edu.baylor.ecs.ems.controller.ChoiceController.updateChoices",
-          "arguments": "[@RequestBody SelectedChoiceEmsDto selectedChoiceEmsDto]",
-          "returnType": "edu.baylor.ecs.ems.model.Choice",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.listAllExams",
-          "arguments": "[]",
-          "returnType": "edu.baylor.ecs.ems.model.Exam",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.listAllQuestionsForExam",
-          "arguments": "[@PathVariable Integer id]",
-          "returnType": "edu.baylor.ecs.ems.model.Question",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.getByUserName",
-          "arguments": "[@PathVariable String username, @RequestHeader(\"Authorization\") String authorization]",
-          "returnType": "edu.baylor.ecs.ems.model.Exam",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
-          "httpMethod": "POST",
-          "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.createExam",
-          "arguments": "[@RequestBody ExamDto examDto]",
-          "returnType": "edu.baylor.ecs.ems.model.Exam",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.takeExam",
-          "arguments": "[@PathVariable(\"id\") Integer id]",
-          "returnType": "edu.baylor.ecs.ems.dto.QuestionEmsDto",
-          "collection": true
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.submitExam",
-          "arguments": "[@PathVariable(\"id\") Integer id]",
-          "returnType": "edu.baylor.ecs.ems.model.Exam",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.finishExam",
-          "arguments": "[@PathVariable(\"id\") Integer id]",
-          "returnType": "java.lang.String",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
-          "httpMethod": "GET",
-          "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.getExam",
-          "arguments": "[@PathVariable(\"id\") Integer id]",
-          "returnType": "edu.baylor.ecs.ems.model.Exam",
-          "collection": false
-        },
-        {
-          "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-          "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
-          "httpMethod": "DELETE",
-          "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.deleteINITExam",
-          "arguments": "[@PathVariable Integer id]",
-          "returnType": "java.lang.String",
-          "collection": false
-        }
-      ]
-    }
+    ...
   ],
   "restFlows": [
     {
@@ -388,31 +105,10 @@ $ curl --request POST \
         "collection": false
       }
     },
-    {
-      "client": {
-        "msRoot": "C:\\seer-lab\\cil-tms\\tms-cms",
-        "source": "C:\\seer-lab\\cil-tms\\tms-cms\\src\\main\\java\\edu\\baylor\\ecs\\cms\\service\\UmsService.java",
-        "httpMethod": "GET",
-        "parentMethod": "edu.baylor.ecs.cms.service.UmsService.getExamineeId",
-        "returnType": "java.lang.String",
-        "collection": false
-      },
-      "endpoint": {
-        "msRoot": "C:\\seer-lab\\cil-tms\\tms-ems",
-        "source": "C:\\seer-lab\\cil-tms\\tms-ems\\src\\main\\java\\edu\\baylor\\ecs\\ems\\controller\\ExamController.java",
-        "httpMethod": "GET",
-        "parentMethod": "edu.baylor.ecs.ems.controller.ExamController.finishExam",
-        "arguments": "[@PathVariable(\"id\") Integer id]",
-        "returnType": "java.lang.String",
-        "collection": false
-      }
-    }
+    ...
   ]
 }
 ```
-
-</p>
-</details>
 
 ## Integrate as library
 
@@ -449,23 +145,52 @@ public RadSourceResponseContext getRadSourceResponseContext(RadSourceRequestCont
 
 ```java
 public class RadSourceRequestContext {
-    private String pathToSource;
+    private List<String> pathToMsRoots;
 }
 ```
 
 ```java
 public class RadSourceResponseContext {
     private RadSourceRequestContext request;
+    private List<RestEntityContext> restEntityContexts;
+    private List<RestFlow> restFlows;
+}
+```
+
+```java
+public class RestEntityContext {
+    String pathToMsRoot;
     private List<RestCall> restCalls;
+    private List<RestEndpoint> restEndpoints;
 }
 ```
 
 ```java
 public class RestCall {
+    private String msRoot;
     private String source;
     private String httpMethod;
     private String parentMethod;
     private String returnType;
     private boolean isCollection;
+}
+```
+
+```java
+public class RestEndpoint {
+    private String msRoot;
+    private String source;
+    private String httpMethod;
+    private String parentMethod;
+    private String arguments;
+    private String returnType;
+    private boolean isCollection;
+}
+```
+
+```java
+public class RestFlow {
+    private RestCall client;
+    private RestEndpoint endpoint;
 }
 ```
