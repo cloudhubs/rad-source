@@ -60,12 +60,39 @@ public class RestFlowService {
 
     // match class name instead of FQ name
     private boolean isReturnTypeMatched(String returnTypeA, String returnTypeB) {
-        if (returnTypeA.contains(".")) {
-            returnTypeA = returnTypeA.substring(returnTypeA.lastIndexOf('.') + 1);
+        returnTypeA = trimFQName(returnTypeA);
+        returnTypeB = trimFQName(returnTypeB);
+
+        if (returnTypeA.equals(returnTypeB)) {
+            return true;
+        } else {
+            return matchIgnoringResponseEntity(returnTypeA, returnTypeB);
         }
-        if (returnTypeB.contains(".")) {
-            returnTypeB = returnTypeB.substring(returnTypeB.lastIndexOf('.') + 1);
-        }
+    }
+
+    // ignore ResponseEntity wrapper
+    // ResponseEntity<Exam> should match with Exam
+    private boolean matchIgnoringResponseEntity(String returnTypeA, String returnTypeB) {
+        returnTypeA = trimResponseEntity(returnTypeA);
+        returnTypeB = trimResponseEntity(returnTypeB);
+
         return returnTypeA.equals(returnTypeB);
+    }
+
+    private String trimFQName(String returnType) {
+        if (returnType.contains(".")) {
+            return returnType.substring(returnType.lastIndexOf('.') + 1);
+        }
+        return returnType;
+    }
+
+    private String trimResponseEntity(String returnType) {
+        if (returnType.startsWith("ResponseEntity<") && returnType.endsWith(">")) {
+            return returnType
+                    .replaceAll("ResponseEntity<", "")
+                    .replaceAll(">", "");
+        }
+
+        return returnType;
     }
 }
