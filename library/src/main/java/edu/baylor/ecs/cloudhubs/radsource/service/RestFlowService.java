@@ -1,8 +1,8 @@
 package edu.baylor.ecs.cloudhubs.radsource.service;
 
+import edu.baylor.ecs.cloudhubs.radsource.context.RestEntityContext;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestCall;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestEndpoint;
-import edu.baylor.ecs.cloudhubs.radsource.context.RestEntityContext;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestFlow;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class RestFlowService {
         for (RestCall restCall : restCalls) {
             for (RestEndpoint restEndpoint : restEndpoints) {
                 if (restCall.getHttpMethod().equals(restEndpoint.getHttpMethod()) &&
-                        restCall.getReturnType().equals(restEndpoint.getReturnType()) &&
+                        isReturnTypeMatched(restCall.getReturnType(), restEndpoint.getReturnType()) &&
                         restCall.isCollection() == restEndpoint.isCollection()) {
 
                     restFlows.add(new RestFlow(restCall, restEndpoint));
@@ -56,5 +56,12 @@ public class RestFlowService {
         }
 
         return restFlows;
+    }
+
+    // match class name instead of FQ name
+    private boolean isReturnTypeMatched(String returnTypeA, String returnTypeB) {
+        returnTypeA = returnTypeA.substring(returnTypeA.lastIndexOf('.') + 1);
+        returnTypeB = returnTypeB.substring(returnTypeB.lastIndexOf('.') + 1);
+        return returnTypeA.equals(returnTypeB);
     }
 }
