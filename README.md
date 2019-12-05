@@ -33,7 +33,7 @@ $ git clone https://github.com/cloudhubs/rad-source.git
 $ git clone https://github.com/cloudhubs/rad-source.git
 $ cd rad-source
 $ mvn clean install -DskipTests
-$ java -jar application/target/rad-source-application-0.0.1.jar
+$ java -jar application/target/rad-source-application-0.0.5.jar
 ```
 
 ### Sample request and response
@@ -131,7 +131,7 @@ $ mvn clean install -DskipTests
 <dependency>
     <groupId>edu.baylor.ecs.cloudhubs</groupId>
     <artifactId>rad-source</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.5</version>
 </dependency>
 ```
 
