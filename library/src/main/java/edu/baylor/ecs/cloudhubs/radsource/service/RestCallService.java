@@ -71,6 +71,11 @@ public class RestCallService {
                             restCall.setParentMethod(packageName + "." + className + "." + methodName);
                             restCall.setHttpMethod(restTemplateMethod.getHttpMethod().toString());
 
+                            // get http methods for exchange method
+                            if (restTemplateMethod.getMethodName().equals("exchange")) {
+                                restCall.setHttpMethod(getHttpMethodForExchange(mce.getArguments().toString()));
+                            }
+
                             // find return type
                             resolveReturnType(restCall, cu, mce, restTemplateMethod);
                             log.debug("rest-call: " + restCall);
@@ -84,6 +89,18 @@ public class RestCallService {
         }
 
         return restCalls;
+    }
+
+    private String getHttpMethodForExchange(String arguments) {
+        if (arguments.contains("HttpMethod.POST")) {
+            return "POST";
+        } else if (arguments.contains("HttpMethod.PUT")) {
+            return "PUT";
+        } else if (arguments.contains("HttpMethod.DELETE")) {
+            return "DELETE";
+        } else {
+            return "GET"; // default
+        }
     }
 
     // populate return type in restCall
