@@ -57,11 +57,10 @@ public class RestCallService {
 
                         Expression scope = mce.getScope().orElse(null);
 
-                        // match field access
-                        if (scope != null && scope.isFieldAccessExpr() &&
-                                isRestTemplateField(cid, scope.asFieldAccessExpr().getNameAsString())) {
+                        log.debug("scope: " + scope);
 
-                            log.debug("field-access: " + scope.asFieldAccessExpr().getNameAsString());
+                        // match field access
+                        if (isRestTemplateScope(scope, cid)) {
 
                             // everything matched here
 
@@ -137,6 +136,22 @@ public class RestCallService {
             }
         }
         return false;
+    }
+
+    private boolean isRestTemplateScope(Expression scope, ClassOrInterfaceDeclaration cid) {
+        if (scope == null) {
+            return false;
+        }
+
+        // field access: this.restTemplate
+        if (scope.isFieldAccessExpr() && isRestTemplateField(cid, scope.asFieldAccessExpr().getNameAsString())) {
+            log.debug("field-access: " + scope.asFieldAccessExpr().getNameAsString());
+            return true;
+        }
+
+        // TODO: make more generic
+        // filed access without this
+        return scope.toString().equalsIgnoreCase("restTemplate");
     }
 
     private boolean isRestTemplateField(ClassOrInterfaceDeclaration cid, String fieldName) {
