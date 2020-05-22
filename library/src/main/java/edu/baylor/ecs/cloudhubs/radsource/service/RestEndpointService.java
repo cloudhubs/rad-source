@@ -6,6 +6,7 @@ import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.MemberValuePair;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestEndpoint;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,10 @@ public class RestEndpointService {
         for (ClassOrInterfaceDeclaration cid : cu.findAll(ClassOrInterfaceDeclaration.class)) {
             String className = cid.getNameAsString();
             log.debug("class: " + className);
+
+            AnnotationExpr cae = cid.getAnnotationByName("RequestMapping").orElse(null);
+            String classLevelPath = pathFromAnnotation(cae);
+            log.debug("class-level-path: " + classLevelPath);
 
             // loop through methods
             for (MethodDeclaration md : cid.findAll(MethodDeclaration.class)) {
@@ -71,11 +76,15 @@ public class RestEndpointService {
                         continue;
                     }
 
+                    String path = pathFromAnnotation(ae);
+                    log.debug("method-level-path: " + path);
+
                     resolveReturnTypeForMethodDeclaration(cu, md, restEndpoint);
                     resolveArgumentsForMethodDeclaration(cu, md, restEndpoint);
 
                     restEndpoint.setSource(sourceFile.getCanonicalPath());
                     restEndpoint.setParentMethod(packageName + "." + className + "." + methodName);
+                    restEndpoint.setPath(Helper.mergePaths(classLevelPath, path));
 
                     log.debug("rest-endpoint: " + restEndpoint);
 
@@ -121,5 +130,27 @@ public class RestEndpointService {
             }
         }
         return false;
+    }
+
+    private String pathFromAnnotation(AnnotationExpr ae) {
+        if (ae == null) {
+            return "";
+        }
+
+        log.debug("annotation-model: " + ae.getMetaModel());
+
+        if (ae.isSingleMemberAnnotationExpr()) {
+            return Helper.removeEnclosedQuotations(ae.asSingleMemberAnnotationExpr().getMemberValue().toString());
+        }
+
+        if (ae.isNormalAnnotationExpr() && ae.asNormalAnnotationExpr().getPairs().size() > 0) {
+            for (MemberValuePair mvp : ae.asNormalAnnotationExpr().getPairs()) {
+                if (mvp.getName().toString().equals("path")) {
+                    return Helper.removeEnclosedQuotations(mvp.getValue().toString());
+                }
+            }
+        }
+
+        return "";
     }
 }

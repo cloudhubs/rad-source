@@ -15,4 +15,5 @@ public class RestEndpoint {
     private String arguments;
     private String returnType;
     private boolean isCollection;
+    private String path;
 }

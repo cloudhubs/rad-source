@@ -16,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RadSourceServiceTest {
 
     private List<RestEndpoint> expectedRestEndpoints = Arrays.asList(
-            new RestEndpoint(null, null, "GET", "doGetMapping", "[]", "SampleModel", false),
-            new RestEndpoint(null, null, "GET", "doRequestMappingGet", "[]", "SampleModel", false),
-            new RestEndpoint(null, null, "POST", "doPostMapping", "[@RequestBody SampleModel sampleModel]", "SampleModel", false),
-            new RestEndpoint(null, null, "POST", "doRequestMappingPost", "[@RequestBody SampleModel sampleModel]", "SampleModel", false)
+            new RestEndpoint(null, null, "GET", "doGetMapping", "[]", "SampleModel", false, ""),
+            new RestEndpoint(null, null, "GET", "doRequestMappingGet", "[]", "SampleModel", false, ""),
+            new RestEndpoint(null, null, "POST", "doPostMapping", "[@RequestBody SampleModel sampleModel]", "SampleModel", false, ""),
+            new RestEndpoint(null, null, "POST", "doRequestMappingPost", "[@RequestBody SampleModel sampleModel]", "SampleModel", false, "")
     );
 
     private List<RestCall> expectedRestCalls = Arrays.asList(
