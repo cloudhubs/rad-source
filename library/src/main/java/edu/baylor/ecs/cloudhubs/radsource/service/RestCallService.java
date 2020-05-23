@@ -149,9 +149,13 @@ public class RestCallService {
             return true;
         }
 
-        // TODO: make more generic
         // filed access without this
-        return scope.toString().equalsIgnoreCase("restTemplate");
+        if (scope.isNameExpr() && isRestTemplateField(cid, scope.asNameExpr().getNameAsString())) {
+            log.debug("name-expr: " + scope.asNameExpr().getNameAsString());
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isRestTemplateField(ClassOrInterfaceDeclaration cid, String fieldName) {
