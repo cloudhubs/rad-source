@@ -16,19 +16,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RadSourceServiceTest {
 
     private List<RestEndpoint> expectedRestEndpoints = Arrays.asList(
-            new RestEndpoint(null, null, "GET", "doGetMapping", "[]", "SampleModel", false, ""),
-            new RestEndpoint(null, null, "GET", "doRequestMappingGet", "[]", "SampleModel", false, ""),
-            new RestEndpoint(null, null, "POST", "doPostMapping", "[@RequestBody SampleModel sampleModel]", "SampleModel", false, ""),
-            new RestEndpoint(null, null, "POST", "doRequestMappingPost", "[@RequestBody SampleModel sampleModel]", "SampleModel", false, "")
+            new RestEndpoint("GET", "doGetMapping", "[]", "SampleModel"),
+            new RestEndpoint("GET", "doRequestMappingGet", "[]", "SampleModel"),
+            new RestEndpoint("POST", "doPostMapping", "[@RequestBody SampleModel sampleModel]", "SampleModel"),
+            new RestEndpoint("POST", "doRequestMappingPost", "[@RequestBody SampleModel sampleModel]", "SampleModel")
     );
 
     private List<RestCall> expectedRestCalls = Arrays.asList(
-            new RestCall(null, null, "GET", "doGetForObject", "SampleModel", false),
-            new RestCall(null, null, "GET", "doGetForEntity", "SampleModel", false),
-            new RestCall(null, null, "GET", "doExchangeGet", "SampleModel", false),
-            new RestCall(null, null, "POST", "doPostForObject", "SampleModel", false),
-            new RestCall(null, null, "POST", "doPostForEntity", "SampleModel", false),
-            new RestCall(null, null, "POST", "doExchangePost", "SampleModel", false)
+            new RestCall("GET", "doGetForObject", "SampleModel"),
+            new RestCall("GET", "doGetForEntity", "SampleModel"),
+            new RestCall("GET", "doExchangeGet", "SampleModel"),
+            new RestCall("POST", "doPostForObject", "SampleModel"),
+            new RestCall("POST", "doPostForEntity", "SampleModel"),
+            new RestCall("POST", "doExchangePost", "SampleModel")
     );
 
     @Test
