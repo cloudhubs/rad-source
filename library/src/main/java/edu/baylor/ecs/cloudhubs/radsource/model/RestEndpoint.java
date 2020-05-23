@@ -14,6 +14,6 @@ public class RestEndpoint {
     private String parentMethod;
     private String arguments;
     private String returnType;
-    private boolean isCollection;
     private String path;
+    private boolean isCollection;
 }

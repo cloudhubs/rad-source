@@ -13,5 +13,6 @@ public class RestCall {
     private String httpMethod;
     private String parentMethod;
     private String returnType;
+    private String url;
     private boolean isCollection;
 }
