@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestCall;
@@ -61,9 +62,6 @@ public class RestCallService {
 
                         // match field access
                         if (isRestTemplateScope(scope, cid)) {
-
-                            // everything matched here
-
                             // construct rest call
                             RestCall restCall = new RestCall();
                             restCall.setSource(sourceFile.getCanonicalPath());
@@ -77,6 +75,10 @@ public class RestCallService {
 
                             // find return type
                             resolveReturnType(restCall, cu, mce, restTemplateMethod);
+
+                            // find url
+                            restCall.setUrl(findUrl(mce, cid));
+
                             log.debug("rest-call: " + restCall);
 
                             // add to list of restCall
@@ -129,6 +131,28 @@ public class RestCallService {
         restCall.setCollection(isCollection);
     }
 
+    private String findUrl(MethodCallExpr mce, ClassOrInterfaceDeclaration cid) {
+        if (mce.getArguments().size() == 0) {
+            return "";
+        }
+
+        Expression exp = mce.getArguments().get(0);
+        log.debug("url-meta: " + exp.getMetaModel());
+        log.debug("url-exp: " + exp.toString());
+
+        if (exp.isStringLiteralExpr()) {
+            return Helper.removeEnclosedQuotations(exp.toString());
+        } else if (exp.isFieldAccessExpr()) {
+            return fieldValue(cid, exp.asFieldAccessExpr().getNameAsString());
+        } else if (exp.isNameExpr()) {
+            return fieldValue(cid, exp.asNameExpr().getNameAsString());
+        } else if (exp.isBinaryExpr()) {
+            return resolveUrlFromBinaryExp(exp.asBinaryExpr());
+        }
+
+        return "";
+    }
+
     private boolean hasRestTemplateImport(CompilationUnit cu) {
         for (ImportDeclaration id : cu.findAll(ImportDeclaration.class)) {
             if (id.getNameAsString().equals("org.springframework.web.client.RestTemplate")) {
@@ -167,6 +191,22 @@ public class RestCallService {
             }
         }
         return false;
+    }
+
+    private String fieldValue(ClassOrInterfaceDeclaration cid, String fieldName) {
+        for (FieldDeclaration fd : cid.findAll(FieldDeclaration.class)) {
+            if (fd.getVariables().toString().contains(fieldName)) {
+                Expression init = fd.getVariable(0).getInitializer().orElse(null);
+                if (init != null) {
+                    return Helper.removeEnclosedQuotations(init.toString());
+                }
+            }
+        }
+        return "";
+    }
+
+    private String resolveUrlFromBinaryExp(BinaryExpr exp) {
+        return Helper.removeEnclosedQuotations(exp.getLeft().toString()) + "{var}";
     }
 
     private List<String> findAllRestTemplateFields(ClassOrInterfaceDeclaration cid) {

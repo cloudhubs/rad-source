@@ -14,6 +14,13 @@ public class RestEndpoint {
     private String parentMethod;
     private String arguments;
     private String returnType;
-    private boolean isCollection;
     private String path;
+    private boolean isCollection;
+
+    public RestEndpoint(String httpMethod, String parentMethod, String arguments, String returnType) {
+        this.httpMethod = httpMethod;
+        this.parentMethod = parentMethod;
+        this.arguments = arguments;
+        this.returnType = returnType;
+    }
 }
