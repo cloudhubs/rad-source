@@ -4,10 +4,14 @@ import edu.baylor.ecs.cloudhubs.radsource.context.RestEntityContext;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestCall;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestEndpoint;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestFlow;
+import lombok.extern.slf4j.Slf4j;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class RestFlowService {
 
     public List<RestFlow> findRestFlows(List<RestEntityContext> restEntityContexts) {
@@ -23,21 +27,6 @@ public class RestFlowService {
             }
         }
 
-       /* // combine all clients into one list
-        List<RestCall> restCalls = new ArrayList<>();
-        restEntityContexts.forEach(e -> restCalls.addAll(e.getRestCalls()));
-
-        // combine all endpoints into one list
-        List<RestEndpoint> restEndpoints = new ArrayList<>();
-        restEntityContexts.forEach(e -> restEndpoints.addAll(e.getRestEndpoints()));
-
-        // match each pair
-        for (RestCall restCall : restCalls) {
-            for (RestEndpoint restEndpoint : restEndpoints) {
-                // TODO
-            }
-        }*/
-
         return restFlows;
     }
 
@@ -47,9 +36,7 @@ public class RestFlowService {
         for (RestCall restCall : restCalls) {
             for (RestEndpoint restEndpoint : restEndpoints) {
                 if (restCall.getHttpMethod().equals(restEndpoint.getHttpMethod()) &&
-                        isReturnTypeMatched(restCall.getReturnType(), restEndpoint.getReturnType()) &&
-                        restCall.isCollection() == restEndpoint.isCollection()) {
-
+                        (isReturnTypeMatched(restCall, restEndpoint) || isPathMatched(restCall, restEndpoint))) {
                     restFlows.add(new RestFlow(restCall, restEndpoint));
                 }
             }
@@ -58,12 +45,36 @@ public class RestFlowService {
         return restFlows;
     }
 
-    // match class name instead of FQ name
-    private boolean isReturnTypeMatched(String returnTypeA, String returnTypeB) {
-        returnTypeA = trimFQName(returnTypeA);
-        returnTypeB = trimFQName(returnTypeB);
+    private boolean isPathMatched(RestCall restCall, RestEndpoint restEndpoint) {
+        // use unified path variable {var}
+        String serverPath = Helper.unifyPathVariable(restEndpoint.getPath());
 
-        if (returnTypeA.equals(returnTypeB)) {
+        // get path from restCall url
+        String clientPath = "/";
+        try {
+            clientPath = new URL(restCall.getUrl()).getPath();
+        } catch (MalformedURLException e) {
+            log.error(e.toString());
+        }
+
+        log.debug("server-path: " + serverPath);
+        log.debug("client-path: " + clientPath);
+
+        return Helper.matchUrl(clientPath, serverPath);
+    }
+
+    // match class name instead of FQ name
+    private boolean isReturnTypeMatched(RestCall restCall, RestEndpoint restEndpoint) {
+        if (restCall.isCollection() != restEndpoint.isCollection()) {
+            return false;
+        }
+
+        String returnTypeA = trimFQName(restCall.getReturnType());
+        String returnTypeB = trimFQName(restEndpoint.getReturnType());
+
+        if (isGenericReturnType(returnTypeA) || isGenericReturnType(returnTypeB)) {
+            return false;
+        } else if (returnTypeA.equals(returnTypeB)) {
             return true;
         } else {
             return matchIgnoringResponseEntity(returnTypeA, returnTypeB);
@@ -84,6 +95,14 @@ public class RestFlowService {
             return returnType.substring(returnType.lastIndexOf('.') + 1);
         }
         return returnType;
+    }
+
+    private boolean isGenericReturnType(String returnType) {
+        // template class, not generic
+        if (returnType.endsWith(">")) {
+            return false;
+        }
+        return returnType.contains("Response") || returnType.contains("HttpEntity");
     }
 
     private String trimResponseEntity(String returnType) {
