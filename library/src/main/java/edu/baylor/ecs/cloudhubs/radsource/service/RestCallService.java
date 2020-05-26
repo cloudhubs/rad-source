@@ -205,6 +205,7 @@ public class RestCallService {
         return "";
     }
 
+    // TODO: resolve recursively
     private String resolveUrlFromBinaryExp(BinaryExpr exp) {
         return Helper.removeEnclosedQuotations(exp.getLeft().toString()) + "{var}";
     }
