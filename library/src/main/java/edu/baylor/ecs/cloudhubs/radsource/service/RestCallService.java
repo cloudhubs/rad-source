@@ -205,9 +205,15 @@ public class RestCallService {
         return "";
     }
 
-    // TODO: resolve recursively
+    // TODO: resolve recursively; kind of resolved, probably not every case considered
     private String resolveUrlFromBinaryExp(BinaryExpr exp) {
-        return Helper.removeEnclosedQuotations(exp.getLeft().toString()) + "{var}";
+        // this handles cases in the form of "some/path/here/" + someExpression + "/" someOtherExpression, or just
+        // "some/path/here/" + someExpression
+        String trailer = exp.getRight().toString().equals("/") || exp.getRight().toString().equals("\"/\"") ? "" : "{var}";
+        if (exp.getLeft().isBinaryExpr()) {
+            return resolveUrlFromBinaryExp(exp.getLeft().asBinaryExpr()) + trailer;
+        }
+        return Helper.removeEnclosedQuotations(exp.getLeft().toString()) + trailer;
     }
 
     private List<String> findAllRestTemplateFields(ClassOrInterfaceDeclaration cid) {

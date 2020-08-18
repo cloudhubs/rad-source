@@ -61,11 +61,16 @@ public class RestEndpointService {
                         case "DeleteMapping":
                             restEndpoint.setHttpMethod("DELETE");
                             break;
+                        case "PutMapping":
+                            restEndpoint.setHttpMethod("PUT");
+                            break;
                         case "RequestMapping":
                             if (ae.toString().contains("RequestMethod.POST")) {
                                 restEndpoint.setHttpMethod("POST");
                             } else if (ae.toString().contains("RequestMethod.DELETE")) {
                                 restEndpoint.setHttpMethod("DELETE");
+                            } else if (ae.toString().contains("RequestMethod.PUT")) {
+                                restEndpoint.setHttpMethod("PUT");
                             } else {
                                 restEndpoint.setHttpMethod("GET");
                             }
@@ -145,7 +150,7 @@ public class RestEndpointService {
 
         if (ae.isNormalAnnotationExpr() && ae.asNormalAnnotationExpr().getPairs().size() > 0) {
             for (MemberValuePair mvp : ae.asNormalAnnotationExpr().getPairs()) {
-                if (mvp.getName().toString().equals("path")) {
+                if (mvp.getName().toString().equals("path") || mvp.getName().toString().equals("value")) {
                     return Helper.removeEnclosedQuotations(mvp.getValue().toString());
                 }
             }
