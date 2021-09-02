@@ -39,16 +39,16 @@
             <scope>compile</scope>
         </dependency>
 
-		<dependency>
+		<!-- <dependency>
 	    	<groupId>com.github.cloudhubs</groupId>
 	    	<artifactId>rad-source</artifactId>
 	    	<version>master-SNAPSHOT</version>
-		</dependency>
-       <!--  <dependency>
+		</dependency> -->
+       <dependency>
             <groupId>edu.baylor.ecs.cloudhubs</groupId>
             <artifactId>rad-source</artifactId>
             <version>0.0.5</version>
-        </dependency> -->
+        </dependency>
 
     </dependencies>
 	<repositories>
