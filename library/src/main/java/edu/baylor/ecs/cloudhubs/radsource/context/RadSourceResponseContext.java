@@ -1,5 +1,6 @@
 package edu.baylor.ecs.cloudhubs.radsource.context;
 
+import edu.baylor.ecs.cloudhubs.radsource.model.MQFlow;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestFlow;
 import lombok.*;
 
@@ -14,4 +15,6 @@ public class RadSourceResponseContext {
     private RadSourceRequestContext request;
     private List<RestEntityContext> restEntityContexts;
     private List<RestFlow> restFlows;
+    private List<MQEntityContext> mqEntityContexts;
+    private List<MQFlow> mqFlows;
 }

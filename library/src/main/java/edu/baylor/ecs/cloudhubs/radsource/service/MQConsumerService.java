@@ -4,15 +4,11 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.BinaryExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import edu.baylor.ecs.cloudhubs.radsource.model.RestCall;
-import edu.baylor.ecs.cloudhubs.radsource.model.RestTemplateMethod;
-import lombok.Data;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.MemberValuePair;
+import edu.baylor.ecs.cloudhubs.radsource.model.MessageQueue;
+import edu.baylor.ecs.cloudhubs.radsource.model.RestEndpoint;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,214 +17,130 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+/**
+ * author: Abdullah Al Maruf
+ * date: 10/15/21
+ * time: 5:00 AM
+ * website : https://maruftuhin.com
+ */
+
 @Service
 @Slf4j
 public class MQConsumerService {
-    public List<RestCall> findRestCalls(File sourceFile) throws IOException {
-        List<RestCall> restCalls = new ArrayList<>();
+    public List<MessageQueue> findConsumers(File sourceFile) throws IOException {
+        List<MessageQueue> consumers = new ArrayList<>();
 
         CompilationUnit cu = StaticJavaParser.parse(sourceFile);
 
-        // don't analyse further if no RestTemplate import exists
-        if (!hasRestTemplateImport(cu)) {
-            log.debug("no RestTemplate found");
-            return restCalls;
-        }
-
         String packageName = Helper.findPackage(cu);
         log.debug("package: " + packageName);
+
+        // don't analyse further if no RestController import exists
+        if (!hasEnableJMS(cu)) {
+            log.debug("no JMSListener found");
+            return consumers;
+        }
+
+//        String packageName = Helper.findPackage(cu);
+//        log.debug("package: " + packageName);
 
         // loop through class declarations
         for (ClassOrInterfaceDeclaration cid : cu.findAll(ClassOrInterfaceDeclaration.class)) {
             String className = cid.getNameAsString();
             log.debug("class: " + className);
 
+            AnnotationExpr cae = cid.getAnnotationByName("EnableJms").orElse(null);
+            String classLevelPath = queueNameFromAnnotation(cae);
+            log.debug("class-level-path: " + classLevelPath);
+
             // loop through methods
             for (MethodDeclaration md : cid.findAll(MethodDeclaration.class)) {
                 String methodName = md.getNameAsString();
                 log.debug("method: " + methodName);
 
-                // loop through method calls
-                for (MethodCallExpr mce : md.findAll(MethodCallExpr.class)) {
-                    String methodCall = mce.getNameAsString();
+                // loop through annotations
+                for (AnnotationExpr ae : md.getAnnotations()) {
+                    MessageQueue consumer = new MessageQueue();
 
-                    RestTemplateMethod restTemplateMethod = RestTemplateMethod.findByName(methodCall);
-
-                    if (restTemplateMethod != null) {
-                        log.debug("method-call: " + methodCall);
-
-                        Expression scope = mce.getScope().orElse(null);
-
-                        log.debug("scope: " + scope);
-
-                        // match field access
-                        if (isRestTemplateScope(scope, cid)) {
-                            // construct rest call
-                            RestCall restCall = new RestCall();
-                            restCall.setSource(sourceFile.getCanonicalPath());
-                            restCall.setParentMethod(packageName + "." + className + "." + methodName);
-                            restCall.setHttpMethod(restTemplateMethod.getHttpMethod().toString());
-
-                            // get http methods for exchange method
-                            if (restTemplateMethod.getMethodName().equals("exchange")) {
-                                restCall.setHttpMethod(getHttpMethodForExchange(mce.getArguments().toString()));
-                            }
-
-                            // find return type
-                            resolveReturnType(restCall, cu, mce, restTemplateMethod);
-
-                            // find url
-                            restCall.setUrl(findUrl(mce, cid));
-
-                            log.debug("rest-call: " + restCall);
-
-                            // add to list of restCall
-                            restCalls.add(restCall);
-                        }
+                    if (!ae.getNameAsString().equals("JmsListener")) {
+                        continue;
                     }
+
+                    String queue = queueNameFromAnnotation(ae);
+                    log.debug("method-level-queue: " + queue);
+
+                    consumer.setSource(sourceFile.getCanonicalPath());
+                    consumer.setParentMethod(packageName + "." + className + "." + methodName);
+                    consumer.setQueueName(queue);
+
+                    log.debug("consumer: " + consumer);
+
+                    consumers.add(consumer);
                 }
             }
         }
 
-        return restCalls;
+
+        return consumers;
     }
 
-    private String getHttpMethodForExchange(String arguments) {
-        if (arguments.contains("HttpMethod.POST")) {
-            return "POST";
-        } else if (arguments.contains("HttpMethod.PUT")) {
-            return "PUT";
-        } else if (arguments.contains("HttpMethod.DELETE")) {
-            return "DELETE";
-        } else {
-            return "GET"; // default
+    // populate return type in consumer
+//    private void resolveReturnTypeForMethodDeclaration(CompilationUnit cu, MethodDeclaration md, RestEndpoint restEndpoint) {
+//        String returnType = md.getTypeAsString();
+//
+//        log.debug("return-type: " + md.getTypeAsString());
+//
+//        if (returnType.startsWith("List<") && returnType.endsWith(">")) {
+//            returnType = returnType.replace("List<", "").replace(">", "");
+//            restEndpoint.setCollection(true);
+//        } else if (returnType.endsWith("[]")) {
+//            returnType = returnType.replace("[]", "");
+//            restEndpoint.setCollection(true);
+//        }
+//
+//        restEndpoint.setReturnType(Helper.findFQClassName(cu, returnType));
+//    }
+
+    // populate arguments in restEndpoint
+    // TODO: find FQ name?
+    private void resolveArgumentsForMethodDeclaration(CompilationUnit cu, MethodDeclaration md, RestEndpoint restEndpoint) {
+        String arguments = md.getParameters().toString();
+        log.debug("arguments: " + arguments);
+        restEndpoint.setArguments(arguments);
+    }
+
+    private boolean hasEnableJMS(CompilationUnit cu) {
+        Boolean enableJMS = false;
+        Boolean jmsListener = false;
+
+        for (ImportDeclaration id : cu.findAll(ImportDeclaration.class)) {
+            if (id.getNameAsString().equals("org.springframework.jms.annotation.EnableJms"))
+                enableJMS = true;
+            if (id.getNameAsString().equals("org.springframework.jms.annotation.JmsListener"))
+                jmsListener = true;
+            if (enableJMS && jmsListener) break;
         }
+        return enableJMS && jmsListener;
     }
 
-    // populate return type in restCall
-    private void resolveReturnType(RestCall restCall, CompilationUnit cu, MethodCallExpr mce, RestTemplateMethod restTemplateMethod) {
-        log.debug("arguments: " + mce.getArguments());
-
-        String returnType = null;
-        boolean isCollection = false;
-
-        if (mce.getArguments().size() > restTemplateMethod.getResponseTypeIndex()) {
-            String param = mce.getArguments().get(restTemplateMethod.getResponseTypeIndex()).toString();
-
-            if (param.endsWith(".class")) {
-                param = param.replace(".class", "");
-            }
-
-            if (param.endsWith("[]")) {
-                param = param.replace("[]", "");
-                isCollection = true;
-            }
-
-            log.debug("param: " + param);
-            returnType = Helper.findFQClassName(cu, param);
-        }
-
-        restCall.setReturnType(returnType);
-        restCall.setCollection(isCollection);
-    }
-
-    private String findUrl(MethodCallExpr mce, ClassOrInterfaceDeclaration cid) {
-        if (mce.getArguments().size() == 0) {
+    private String queueNameFromAnnotation(AnnotationExpr ae) {
+        if (ae == null) {
             return "";
         }
 
-        Expression exp = mce.getArguments().get(0);
-        log.debug("url-meta: " + exp.getMetaModel());
-        log.debug("url-exp: " + exp.toString());
+        log.debug("annotation-model: " + ae.getMetaModel());
 
-        if (exp.isStringLiteralExpr()) {
-            return Helper.removeEnclosedQuotations(exp.toString());
-        } else if (exp.isFieldAccessExpr()) {
-            return fieldValue(cid, exp.asFieldAccessExpr().getNameAsString());
-        } else if (exp.isNameExpr()) {
-            return fieldValue(cid, exp.asNameExpr().getNameAsString());
-        } else if (exp.isBinaryExpr()) {
-            return resolveUrlFromBinaryExp(exp.asBinaryExpr());
+        if (ae.isSingleMemberAnnotationExpr()) {
+            return Helper.removeEnclosedQuotations(ae.asSingleMemberAnnotationExpr().getMemberValue().toString());
         }
 
-        return "";
-    }
-
-    private boolean hasRestTemplateImport(CompilationUnit cu) {
-        for (ImportDeclaration id : cu.findAll(ImportDeclaration.class)) {
-            if (id.getNameAsString().equals("org.springframework.web.client.RestTemplate")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isRestTemplateScope(Expression scope, ClassOrInterfaceDeclaration cid) {
-        if (scope == null) {
-            return false;
-        }
-
-        // field access: this.restTemplate
-        if (scope.isFieldAccessExpr() && isRestTemplateField(cid, scope.asFieldAccessExpr().getNameAsString())) {
-            log.debug("field-access: " + scope.asFieldAccessExpr().getNameAsString());
-            return true;
-        }
-
-        // filed access without this
-        if (scope.isNameExpr() && isRestTemplateField(cid, scope.asNameExpr().getNameAsString())) {
-            log.debug("name-expr: " + scope.asNameExpr().getNameAsString());
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean isRestTemplateField(ClassOrInterfaceDeclaration cid, String fieldName) {
-        for (FieldDeclaration fd : cid.findAll(FieldDeclaration.class)) {
-            if (fd.getElementType().toString().equals("RestTemplate") &&
-                    fd.getVariables().toString().contains(fieldName)) {
-
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String fieldValue(ClassOrInterfaceDeclaration cid, String fieldName) {
-        for (FieldDeclaration fd : cid.findAll(FieldDeclaration.class)) {
-            if (fd.getVariables().toString().contains(fieldName)) {
-                Expression init = fd.getVariable(0).getInitializer().orElse(null);
-                if (init != null) {
-                    return Helper.removeEnclosedQuotations(init.toString());
+        if (ae.isNormalAnnotationExpr() && ae.asNormalAnnotationExpr().getPairs().size() > 0) {
+            for (MemberValuePair mvp : ae.asNormalAnnotationExpr().getPairs()) {
+                if (mvp.getName().toString().equals("destination")) {
+                    return Helper.removeEnclosedQuotations(mvp.getValue().toString());
                 }
             }
         }
         return "";
-    }
-
-    // TODO: resolve recursively; kind of resolved, probably not every case considered
-    private String resolveUrlFromBinaryExp(BinaryExpr exp) {
-        // this handles cases in the form of "some/path/here/" + someExpression + "/" someOtherExpression, or just
-        // "some/path/here/" + someExpression
-        String trailer = exp.getRight().toString().equals("/") || exp.getRight().toString().equals("\"/\"") ? "" : "{var}";
-        if (exp.getLeft().isBinaryExpr()) {
-            return resolveUrlFromBinaryExp(exp.getLeft().asBinaryExpr()) + trailer;
-        }
-        return Helper.removeEnclosedQuotations(exp.getLeft().toString()) + trailer;
-    }
-
-    private List<String> findAllRestTemplateFields(ClassOrInterfaceDeclaration cid) {
-        List<String> fields = new ArrayList<>();
-
-        for (FieldDeclaration fd : cid.findAll(FieldDeclaration.class)) {
-            if (fd.getElementType().toString().equals("RestTemplate")) {
-                for (VariableDeclarator variable : fd.getVariables()) {
-                    fields.add(variable.getNameAsString());
-                }
-            }
-        }
-
-        return fields;
     }
 }

@@ -1,8 +1,10 @@
 package edu.baylor.ecs.cloudhubs.radsource.service;
 
+import edu.baylor.ecs.cloudhubs.radsource.context.MQEntityContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceRequestContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceResponseContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RestEntityContext;
+import edu.baylor.ecs.cloudhubs.radsource.model.MessageQueue;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestCall;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestEndpoint;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestFlow;
@@ -25,6 +27,9 @@ public class RadSourceService {
     private final RestCallService restCallService;
     private final RestEndpointService restEndpointService;
     private final RestFlowService restFlowService;
+    private final MQConsumerService mqConsumerService;
+    private final MQProducerService mqProducerService;
+    private final MQFlowService mqFlowService;
 
     // no args constructor
     // initialize restCallService manually
@@ -32,6 +37,10 @@ public class RadSourceService {
         this.restCallService = new RestCallService();
         this.restEndpointService = new RestEndpointService();
         this.restFlowService = new RestFlowService();
+
+        this.mqConsumerService = new MQConsumerService();
+        this.mqProducerService = new MQProducerService();
+        this.mqFlowService = new MQFlowService();
     }
 
     public RadSourceResponseContext generateRadSourceResponseContext(RadSourceRequestContext request) throws IOException {
@@ -39,13 +48,16 @@ public class RadSourceService {
         responseContext.setRequest(request);
 
         List<RestEntityContext> restEntityContexts = new ArrayList<>();
+        List<MQEntityContext> mqEntityContexts = new ArrayList<>();
 
         for (String pathToMsRoot : request.getPathToMsRoots()) {
             restEntityContexts.add(generateRestEntityContext(pathToMsRoot));
+            mqEntityContexts.add(generateMQEntityContext(pathToMsRoot));
         }
 
         List<RestFlow> restFlows = restFlowService.findRestFlows(restEntityContexts);
 
+        responseContext.setMqEntityContexts(mqEntityContexts);
         responseContext.setRestEntityContexts(restEntityContexts);
         responseContext.setRestFlows(restFlows);
 
@@ -72,6 +84,29 @@ public class RadSourceService {
         restEntityContext.setRestEndpoints(restEndpoints);
 
         return restEntityContext;
+    }
+
+    // TODO
+    private MQEntityContext generateMQEntityContext(String pathToMsRoot) throws IOException {
+        MQEntityContext mqEntityContext = new MQEntityContext();
+        mqEntityContext.setPathToMsRoot(pathToMsRoot);
+
+        List<MessageQueue> consumer = new ArrayList<>();
+        List<MessageQueue> producer = new ArrayList<>();
+
+        for (File sourceFile : getSourceFiles(pathToMsRoot)) {
+            consumer.addAll(mqConsumerService.findConsumers(sourceFile));
+            producer.addAll(mqProducerService.findProducers(sourceFile));
+        }
+
+        // add msRoot to all restCalls and restEndpoints
+        consumer.forEach(e -> e.setMsRoot(pathToMsRoot));
+        producer.forEach(e -> e.setMsRoot(pathToMsRoot));
+
+        mqEntityContext.setConsumers(consumer);
+        mqEntityContext.setProducers(producer);
+
+        return mqEntityContext;
     }
 
     private List<File> getSourceFiles(String directoryOrFile) {
