@@ -4,10 +4,7 @@ import edu.baylor.ecs.cloudhubs.radsource.context.MQEntityContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceRequestContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceResponseContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RestEntityContext;
-import edu.baylor.ecs.cloudhubs.radsource.model.MessageQueue;
-import edu.baylor.ecs.cloudhubs.radsource.model.RestCall;
-import edu.baylor.ecs.cloudhubs.radsource.model.RestEndpoint;
-import edu.baylor.ecs.cloudhubs.radsource.model.RestFlow;
+import edu.baylor.ecs.cloudhubs.radsource.model.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -56,6 +53,7 @@ public class RadSourceService {
         }
 
         List<RestFlow> restFlows = restFlowService.findRestFlows(restEntityContexts);
+        List<MQFlow> mqFlows = mqFlowService.findMQFlowService(mqEntityContexts);
 
         responseContext.setMqEntityContexts(mqEntityContexts);
         responseContext.setRestEntityContexts(restEntityContexts);
