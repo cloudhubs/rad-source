@@ -4,6 +4,7 @@ import edu.baylor.ecs.cloudhubs.radsource.context.MQEntityContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceRequestContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RadSourceResponseContext;
 import edu.baylor.ecs.cloudhubs.radsource.context.RestEntityContext;
+import edu.baylor.ecs.cloudhubs.radsource.graph.GVGenerator;
 import edu.baylor.ecs.cloudhubs.radsource.model.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +60,8 @@ public class RadSourceService {
         responseContext.setRestEntityContexts(restEntityContexts);
         responseContext.setRestFlows(restFlows);
         responseContext.setMqFlows(mqFlows);
+
+        GVGenerator.generate(responseContext);
 
         return responseContext;
     }
