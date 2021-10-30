@@ -58,6 +58,7 @@ public class RadSourceService {
         responseContext.setMqEntityContexts(mqEntityContexts);
         responseContext.setRestEntityContexts(restEntityContexts);
         responseContext.setRestFlows(restFlows);
+        responseContext.setMqFlows(mqFlows);
 
         return responseContext;
     }
