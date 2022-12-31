@@ -68,7 +68,8 @@ public class RestEndpointService {
 //				restEndpoint.setSource(sourceFile.getCanonicalPath());
 //                restEndpoint.setParentMethod(packageName + "." + className + "." + methodName);
 //                restEndpoint.setPath(Helper.mergePaths(classLevelPath, path));
-                restEndpoint.setHttpMethod(grpcCallData.getMethodType());
+//                restEndpoint.setHttpMethod(grpcCallData.getMethodType());
+				restEndpoint.setHttpMethod("RPC");
                 restEndpoint.setArguments(grpcCallData.getArguments());
                 restEndpoint.setReturnType(grpcCallData.getReturnType());
                 restEndpoint.setPath(grpcCallData.getName());

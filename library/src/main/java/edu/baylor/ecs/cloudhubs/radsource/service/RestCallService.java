@@ -65,7 +65,8 @@ public class RestCallService {
 				RestCall restCall = new RestCall();
 //				restCall.setSource(sourceFile.getCanonicalPath());
 //                restCall.setParentMethod(packageName + "." + className + "." + methodName);
-                restCall.setHttpMethod(grpcCallData.getMethodType());
+//                restCall.setHttpMethod(grpcCallData.getMethodType());
+				restCall.setHttpMethod("RPC");
                 restCall.setReturnType(grpcCallData.getReturnType());
                 restCall.setUrl(grpcCallData.getName());
                 // Arguments param is not counted
