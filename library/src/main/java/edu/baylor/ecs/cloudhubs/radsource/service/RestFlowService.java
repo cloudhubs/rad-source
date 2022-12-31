@@ -68,6 +68,10 @@ public class RestFlowService {
         if (restCall.isCollection() != restEndpoint.isCollection()) {
             return false;
         }
+        
+        if (restCall.getReturnType() == null || restEndpoint.getReturnType() == null) {
+        	return false;
+        }
 
         String returnTypeA = trimFQName(restCall.getReturnType());
         String returnTypeB = trimFQName(restEndpoint.getReturnType());
