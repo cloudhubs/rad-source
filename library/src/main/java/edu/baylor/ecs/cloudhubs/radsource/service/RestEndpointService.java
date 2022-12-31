@@ -37,7 +37,7 @@ public class RestEndpointService {
 				RestEndpoint restEndpoint = new RestEndpoint();
 				
 //				restEndpoint.setSource(sourceFile.getCanonicalPath());
-//                restEndpoint.setParentMethod(packageName + "." + className + "." + methodName);
+                restEndpoint.setParentMethod(endpointData.getName());
 //                restEndpoint.setPath(Helper.mergePaths(classLevelPath, path));
                 restEndpoint.setHttpMethod(endpointData.getMethodType());
                 restEndpoint.setArguments(endpointData.getArguments());
@@ -56,6 +56,7 @@ public class RestEndpointService {
 //                restEndpoint.setHttpMethod(endpointData.getMethodType());
 //                restEndpoint.setArguments(endpointData.getArguments());
 //                restEndpoint.setReturnType(endpointData.getReturnType());
+				restEndpoint.setParentMethod(eventData.getName());
 				restEndpoint.setHttpMethod("Event");
                 restEndpoint.setPath(eventData.getName());
                 restEndpoint.setMsRoot(serviceData.getName());
@@ -69,6 +70,7 @@ public class RestEndpointService {
 //                restEndpoint.setParentMethod(packageName + "." + className + "." + methodName);
 //                restEndpoint.setPath(Helper.mergePaths(classLevelPath, path));
 //                restEndpoint.setHttpMethod(grpcCallData.getMethodType());
+				restEndpoint.setParentMethod(grpcCallData.getName());
 				restEndpoint.setHttpMethod("RPC");
                 restEndpoint.setArguments(grpcCallData.getArguments());
                 restEndpoint.setReturnType(grpcCallData.getReturnType());

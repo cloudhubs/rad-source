@@ -41,7 +41,7 @@ public class RestCallService {
 			for (ExtractedServiceData.EndpointData endpointCallData : serviceData.getCallsData().getEndpoints()) {
 				RestCall restCall = new RestCall();
 //				restCall.setSource(sourceFile.getCanonicalPath());
-//                restCall.setParentMethod(packageName + "." + className + "." + methodName);
+//                restCall.setParentMethod(endpointCallData.getPath());
                 restCall.setHttpMethod(endpointCallData.getMethodType());
                 restCall.setReturnType(endpointCallData.getReturnType());
                 restCall.setUrl(endpointCallData.getPath());
