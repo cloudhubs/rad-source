@@ -10,15 +10,84 @@ import com.github.javaparser.ast.expr.MemberValuePair;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestEndpoint;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.apache.commons.io.FileUtils;
+import java.nio.charset.StandardCharsets;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 @Slf4j
 public class RestEndpointService {
+	
+	public List<RestEndpoint> extractRestEndpoints(String jsonFilePath) throws IOException {
+		List<RestEndpoint> restEndpoints = new ArrayList<>();
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonData = readFile(jsonFilePath);
+		List<ExtractedServiceData> extractedServiceData = Arrays.asList(mapper.readValue(jsonData, ExtractedServiceData[].class));
+		
+		for (ExtractedServiceData serviceData : extractedServiceData) {
+			for (ExtractedServiceData.EndpointData endpointData : serviceData.getEndpoints()) {
+				RestEndpoint restEndpoint = new RestEndpoint();
+				
+//				restEndpoint.setSource(sourceFile.getCanonicalPath());
+//                restEndpoint.setParentMethod(packageName + "." + className + "." + methodName);
+//                restEndpoint.setPath(Helper.mergePaths(classLevelPath, path));
+                restEndpoint.setHttpMethod(endpointData.getMethodType());
+                restEndpoint.setArguments(endpointData.getArguments());
+                restEndpoint.setReturnType(endpointData.getReturnType());
+                restEndpoint.setPath(endpointData.getPath());
+                
+                restEndpoints.add(restEndpoint);
+			}
+			
+			for (ExtractedServiceData.EventData eventData : serviceData.getEvents()) {
+				RestEndpoint restEndpoint = new RestEndpoint();
+				
+//				restEndpoint.setSource(sourceFile.getCanonicalPath());
+//                restEndpoint.setParentMethod(packageName + "." + className + "." + methodName);
+//                restEndpoint.setPath(Helper.mergePaths(classLevelPath, path));
+//                restEndpoint.setHttpMethod(endpointData.getMethodType());
+//                restEndpoint.setArguments(endpointData.getArguments());
+//                restEndpoint.setReturnType(endpointData.getReturnType());
+                restEndpoint.setPath(eventData.getName());
+                
+                restEndpoints.add(restEndpoint);
+			}
+			
+			for (ExtractedServiceData.GRPCData grpcCallData : serviceData.getGrpcList()) {
+				RestEndpoint restEndpoint = new RestEndpoint();
+				
+//				restEndpoint.setSource(sourceFile.getCanonicalPath());
+//                restEndpoint.setParentMethod(packageName + "." + className + "." + methodName);
+//                restEndpoint.setPath(Helper.mergePaths(classLevelPath, path));
+                restEndpoint.setHttpMethod(grpcCallData.getMethodType());
+                restEndpoint.setArguments(grpcCallData.getArguments());
+                restEndpoint.setReturnType(grpcCallData.getReturnType());
+                restEndpoint.setPath(grpcCallData.getName());
+                
+                restEndpoints.add(restEndpoint);
+			}
+		}
+		return restEndpoints;
+		
+	}
+	
+	private String readFile(String fileName) {
+		try {
+			return FileUtils.readFileToString(new File(fileName), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
     public List<RestEndpoint> findRestEndpoints(File sourceFile) throws IOException {
         List<RestEndpoint> restEndpoints = new ArrayList<>();
 

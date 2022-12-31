@@ -44,12 +44,45 @@ public class RadSourceService {
             restEntityContexts.add(generateRestEntityContext(pathToMsRoot));
         }
 
+        String extractedJsonDataFilePath = request.getPathToExtractedJsonDataFile();
+        if (extractedJsonDataFilePath != null && !extractedJsonDataFilePath.isEmpty()) {
+        	restEntityContexts.add(extractRestEntityContext(extractedJsonDataFilePath));
+        }
+        
         List<RestFlow> restFlows = restFlowService.findRestFlows(restEntityContexts);
 
         responseContext.setRestEntityContexts(restEntityContexts);
         responseContext.setRestFlows(restFlows);
 
         return responseContext;
+    }
+    
+    private RestEntityContext extractRestEntityContext(String pathToExtractedDataJsonFile) throws IOException {
+        RestEntityContext restEntityContext = new RestEntityContext();
+//        restEntityContext.setPathToMsRoot(pathToMsRoot);
+        
+//        File jsonFile = new File(pathToExtractedDataJsonFile)
+
+        List<RestCall> restCalls = new ArrayList<>();
+        List<RestEndpoint> restEndpoints = new ArrayList<>();
+        
+        /// TODO: IMPLEMENT THOSE METHODS to read json and return the data
+        restCalls.addAll(restCallService.extractRestCalls(pathToExtractedDataJsonFile));
+        restEndpoints.addAll(restEndpointService.extractRestEndpoints(pathToExtractedDataJsonFile));
+
+//        for (File sourceFile : getSourceFiles(pathToMsRoot)) {
+//            restCalls.addAll(restCallService.findRestCalls(sourceFile));
+//            restEndpoints.addAll(restEndpointService.findRestEndpoints(sourceFile));
+//        }
+
+        // add msRoot to all restCalls and restEndpoints
+//        restCalls.forEach(e -> e.setMsRoot(pathToMsRoot));
+//        restEndpoints.forEach(e -> e.setMsRoot(pathToMsRoot));
+
+        restEntityContext.setRestCalls(restCalls);
+        restEntityContext.setRestEndpoints(restEndpoints);
+
+        return restEntityContext;
     }
 
     private RestEntityContext generateRestEntityContext(String pathToMsRoot) throws IOException {
@@ -81,4 +114,5 @@ public class RadSourceService {
             return (List<File>) FileUtils.listFiles(new File(directoryOrFile), new String[]{"java"}, true);
         }
     }
+    
 }

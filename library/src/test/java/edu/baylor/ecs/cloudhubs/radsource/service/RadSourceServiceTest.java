@@ -38,7 +38,7 @@ class RadSourceServiceTest {
         List<String> paths = new ArrayList<>();
         paths.add("../sample");
 
-        RadSourceRequestContext radSourceRequestContext = new RadSourceRequestContext(paths);
+        RadSourceRequestContext radSourceRequestContext = new RadSourceRequestContext(paths, null);
         RadSourceResponseContext radSourceResponseContext = radSourceService.generateRadSourceResponseContext(radSourceRequestContext);
 
         assertEquals(radSourceResponseContext.getRestEntityContexts().size(), 1);

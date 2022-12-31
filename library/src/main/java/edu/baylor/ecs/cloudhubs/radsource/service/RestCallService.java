@@ -14,15 +14,78 @@ import edu.baylor.ecs.cloudhubs.radsource.model.RestCall;
 import edu.baylor.ecs.cloudhubs.radsource.model.RestTemplateMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.apache.commons.io.FileUtils;
+import java.nio.charset.StandardCharsets;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 @Slf4j
 public class RestCallService {
+	
+	public List<RestCall> extractRestCalls(String jsonFilePath) throws IOException {
+		List<RestCall> restCalls = new ArrayList<>();
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonData = readFile(jsonFilePath);
+		List<ExtractedServiceData> extractedServiceData = Arrays.asList(mapper.readValue(jsonData, ExtractedServiceData[].class));
+		
+		for (ExtractedServiceData serviceData : extractedServiceData) {
+			for (ExtractedServiceData.EndpointData endpointCallData : serviceData.getCallsData().getEndpoints()) {
+				RestCall restCall = new RestCall();
+//				restCall.setSource(sourceFile.getCanonicalPath());
+//                restCall.setParentMethod(packageName + "." + className + "." + methodName);
+                restCall.setHttpMethod(endpointCallData.getMethodType());
+                restCall.setReturnType(endpointCallData.getReturnType());
+                restCall.setUrl(endpointCallData.getPath());
+                // Arguments param is not counted
+				restCalls.add(restCall);
+			}
+			
+			for (ExtractedServiceData.EventData eventData : serviceData.getCallsData().getEvents()) {
+				RestCall restCall = new RestCall();
+//				restCall.setSource(sourceFile.getCanonicalPath());
+//                restCall.setParentMethod(packageName + "." + className + "." + methodName);
+//                restCall.setHttpMethod(endpointCallData.getMethodType());
+//                restCall.setReturnType(endpointCallData.getReturnType());
+                restCall.setUrl(eventData.getName());
+                // Arguments param is not counted
+				restCalls.add(restCall);
+			}
+			
+			for (ExtractedServiceData.GRPCData grpcCallData : serviceData.getCallsData().getGrpcList()) {
+				RestCall restCall = new RestCall();
+//				restCall.setSource(sourceFile.getCanonicalPath());
+//                restCall.setParentMethod(packageName + "." + className + "." + methodName);
+                restCall.setHttpMethod(grpcCallData.getMethodType());
+                restCall.setReturnType(grpcCallData.getReturnType());
+                restCall.setUrl(grpcCallData.getName());
+                // Arguments param is not counted
+				restCalls.add(restCall);
+			}
+		}
+		return restCalls;
+		
+	}
+	
+	
+	private String readFile(String fileName) {
+		try {
+			return FileUtils.readFileToString(new File(fileName), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
     public List<RestCall> findRestCalls(File sourceFile) throws IOException {
         List<RestCall> restCalls = new ArrayList<>();
 

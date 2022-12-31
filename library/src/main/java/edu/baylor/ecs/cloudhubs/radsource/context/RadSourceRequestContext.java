@@ -11,4 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 public class RadSourceRequestContext {
     private List<String> pathToMsRoots;
+    private String pathToExtractedJsonDataFile;
 }
