@@ -45,6 +45,7 @@ public class RestCallService {
                 restCall.setHttpMethod(endpointCallData.getMethodType());
                 restCall.setReturnType(endpointCallData.getReturnType());
                 restCall.setUrl(endpointCallData.getPath());
+                restCall.setMsRoot(serviceData.getName());
                 // Arguments param is not counted
 				restCalls.add(restCall);
 			}
@@ -57,6 +58,7 @@ public class RestCallService {
 //                restCall.setReturnType(endpointCallData.getReturnType());
 				restCall.setHttpMethod("Event");
                 restCall.setUrl(eventData.getName());
+                restCall.setMsRoot(serviceData.getName());
                 // Arguments param is not counted
 				restCalls.add(restCall);
 			}
@@ -69,6 +71,7 @@ public class RestCallService {
 				restCall.setHttpMethod("RPC");
                 restCall.setReturnType(grpcCallData.getReturnType());
                 restCall.setUrl(grpcCallData.getName());
+                restCall.setMsRoot(serviceData.getName());
                 // Arguments param is not counted
 				restCalls.add(restCall);
 			}

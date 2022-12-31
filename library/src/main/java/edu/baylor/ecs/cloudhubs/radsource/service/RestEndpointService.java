@@ -43,7 +43,7 @@ public class RestEndpointService {
                 restEndpoint.setArguments(endpointData.getArguments());
                 restEndpoint.setReturnType(endpointData.getReturnType());
                 restEndpoint.setPath(endpointData.getPath());
-                
+                restEndpoint.setMsRoot(serviceData.getName());
                 restEndpoints.add(restEndpoint);
 			}
 			
@@ -58,7 +58,7 @@ public class RestEndpointService {
 //                restEndpoint.setReturnType(endpointData.getReturnType());
 				restCall.setHttpMethod("Event");
                 restEndpoint.setPath(eventData.getName());
-                
+                restEndpoint.setMsRoot(serviceData.getName());
                 restEndpoints.add(restEndpoint);
 			}
 			
@@ -73,7 +73,7 @@ public class RestEndpointService {
                 restEndpoint.setArguments(grpcCallData.getArguments());
                 restEndpoint.setReturnType(grpcCallData.getReturnType());
                 restEndpoint.setPath(grpcCallData.getName());
-                
+                restEndpoint.setMsRoot(serviceData.getName());
                 restEndpoints.add(restEndpoint);
 			}
 		}
