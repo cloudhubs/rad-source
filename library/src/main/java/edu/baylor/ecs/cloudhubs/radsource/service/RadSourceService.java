@@ -75,8 +75,8 @@ public class RadSourceService {
 //        }
 
         // add msRoot to all restCalls and restEndpoints
-//        restCalls.forEach(e -> e.setMsRoot(pathToMsRoot));
-//        restEndpoints.forEach(e -> e.setMsRoot(pathToMsRoot));
+        restCalls.forEach(e -> System.out.println(e.getMsRoot()));
+        restEndpoints.forEach(e -> System.out.println(e.getMsRoot()));
 
         restEntityContext.setRestCalls(restCalls);
         restEntityContext.setRestEndpoints(restEndpoints);
