@@ -20,7 +20,7 @@ public class RestFlowService {
         for (RestEntityContext contextA : restEntityContexts) {
             for (RestEntityContext contextB : restEntityContexts) {
                 // don't match same MS
-                if (contextA.getPathToMsRoot().equals(contextB.getPathToMsRoot())) continue;
+                if (contextA.getPathToMsRoot() != null && contextB.getPathToMsRoot() != null && contextA.getPathToMsRoot().equals(contextB.getPathToMsRoot())) continue;
 
                 // consider contextA as clients and contextB as endpoints
                 restFlows.addAll(restFlowsForContexts(contextA.getRestCalls(), contextB.getRestEndpoints()));

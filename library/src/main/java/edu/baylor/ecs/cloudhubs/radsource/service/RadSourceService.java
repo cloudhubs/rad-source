@@ -65,8 +65,7 @@ public class RadSourceService {
 
         List<RestCall> restCalls = new ArrayList<>();
         List<RestEndpoint> restEndpoints = new ArrayList<>();
-        
-        /// TODO: IMPLEMENT THOSE METHODS to read json and return the data
+       
         restCalls.addAll(restCallService.extractRestCalls(pathToExtractedDataJsonFile));
         restEndpoints.addAll(restEndpointService.extractRestEndpoints(pathToExtractedDataJsonFile));
 
