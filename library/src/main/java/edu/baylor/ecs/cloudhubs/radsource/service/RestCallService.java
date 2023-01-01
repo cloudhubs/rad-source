@@ -56,7 +56,7 @@ public class RestCallService {
 //                restCall.setParentMethod(packageName + "." + className + "." + methodName);
 //                restCall.setHttpMethod(endpointCallData.getMethodType());
 //                restCall.setReturnType(endpointCallData.getReturnType());
-				restCall.setHttpMethod("Event");
+				restCall.setHttpMethod("EVENT");
                 restCall.setUrl(eventData.getName());
                 restCall.setMsRoot(serviceData.getName());
                 // Arguments param is not counted

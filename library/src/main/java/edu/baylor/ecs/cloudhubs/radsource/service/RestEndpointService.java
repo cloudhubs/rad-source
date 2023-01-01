@@ -57,7 +57,7 @@ public class RestEndpointService {
 //                restEndpoint.setArguments(endpointData.getArguments());
 //                restEndpoint.setReturnType(endpointData.getReturnType());
 				restEndpoint.setParentMethod(eventData.getName());
-				restEndpoint.setHttpMethod("Event");
+				restEndpoint.setHttpMethod("EVENT");
                 restEndpoint.setPath(eventData.getName());
                 restEndpoint.setMsRoot(serviceData.getName());
                 restEndpoints.add(restEndpoint);

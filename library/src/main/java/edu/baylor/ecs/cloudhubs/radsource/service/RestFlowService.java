@@ -41,6 +41,7 @@ public class RestFlowService {
             	
                 if (restCall.getHttpMethod().equals(restEndpoint.getHttpMethod()) &&
                         (isReturnTypeMatched(restCall, restEndpoint) || isPathMatched(restCall, restEndpoint))) {
+                	System.out.println("MATCHEEEED = "+ restEndpoint.getHttpMethod() + "  "+ restCall.getUrl());
                     restFlows.add(new RestFlow(restCall, restEndpoint));
                 }
             }
