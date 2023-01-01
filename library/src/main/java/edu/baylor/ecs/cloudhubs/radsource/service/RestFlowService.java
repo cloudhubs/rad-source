@@ -35,6 +35,10 @@ public class RestFlowService {
 
         for (RestCall restCall : restCalls) {
             for (RestEndpoint restEndpoint : restEndpoints) {
+            	System.out.println("METHOD 1 = "+ restCall.getHttpMethod());
+            	System.out.println("METHOD 2 = "+ restEndpoint.getHttpMethod());
+            	
+            	
                 if (restCall.getHttpMethod().equals(restEndpoint.getHttpMethod()) &&
                         (isReturnTypeMatched(restCall, restEndpoint) || isPathMatched(restCall, restEndpoint))) {
                     restFlows.add(new RestFlow(restCall, restEndpoint));
@@ -57,6 +61,9 @@ public class RestFlowService {
             log.error(e.toString());
         }
 
+        System.out.println("Server 1 = "+ restEndpoint.getPath() + "   " + serverPath);
+        System.out.println("Client 1 = "+ restCall.getUrl() + "  "+ clientPath);
+        
         log.debug("server-path: " + serverPath);
         log.debug("client-path: " + clientPath);
 
