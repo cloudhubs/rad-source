@@ -54,7 +54,8 @@ public class RestFlowService {
         String serverPath = Helper.unifyPathVariable(restEndpoint.getPath());
 
         // get path from restCall url
-        String clientPath = "/";
+//        String clientPath = "/";
+        String clientPath = Helper.unifyPathVariable(restCall.getUrl());
         try {
             clientPath = new URL(restCall.getUrl()).getPath();
         } catch (MalformedURLException e) {
