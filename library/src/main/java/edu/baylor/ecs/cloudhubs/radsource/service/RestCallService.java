@@ -283,17 +283,20 @@ public class RestCallService {
     private String resolveUrlFromBinaryExpModified(BinaryExpr exp) {
     	
     	String[] stringParts = exp.toString().split("+");
+    	
+    	System.out.println("URL PARTS BEFORE: " + stringParts.length);
+    	
     	StringBuilder newURL = new StringBuilder();
     	
     	if (stringParts.length <= 0) {
     		return "";
     	} else {
     		// The first part is variable, assume it's inside_payment_service_url + "/api/v1/inside_pay_service/inside_payment/drawback/" + userId + "/" + money
-        	if ((stringParts[0].contains("/")) || stringParts[0].contains("\"")) {
+        	if ((stringParts[0].contains("/"))) {//|| stringParts[0].contains("\"")) {
         		newURL.append(stringParts[0]);
         	}
         	for (int i = 1; i < stringParts.length; i++) {
-        		if ((stringParts[i].contains("/")) || stringParts[i].contains("\"")) {
+        		if ((stringParts[i].contains("/"))) { //|| stringParts[i].contains("\"")) {
         			newURL.append(stringParts[i]);
         		} else {
         			newURL.append("/");
