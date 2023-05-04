@@ -280,6 +280,7 @@ public class RestCallService {
         return "";
     }
 
+    // This one is cleared to resolve the generating of URL , it needs enhancement later
     private String resolveUrlFromBinaryExpModified(BinaryExpr exp) {
     	
     	String[] stringParts = exp.toString().split("\\+");
@@ -307,7 +308,7 @@ public class RestCallService {
     	
     	System.out.println("URL AFTER: " + newURL.toString());
     	
-    	return newURL.toString();
+    	return newURL.toString().replaceAll("//+", "/");
     	
     }
     
