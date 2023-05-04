@@ -104,7 +104,8 @@ public class RestCallService {
 
         String packageName = Helper.findPackage(cu);
         log.debug("package: " + packageName);
-
+        
+       
         // loop through class declarations
         for (ClassOrInterfaceDeclaration cid : cu.findAll(ClassOrInterfaceDeclaration.class)) {
             String className = cid.getNameAsString();
@@ -150,9 +151,14 @@ public class RestCallService {
                             restCall.setUrl(findUrl(mce, cid));
 
                             log.debug("rest-call: " + restCall);
+                            
+                            // Don't add the restCalls that are in the test packages
+                            if (!restCall.getSource().contains("/src/test/")) {
+                            	// add to list of restCall
+                                restCalls.add(restCall);
+                            }
 
-                            // add to list of restCall
-                            restCalls.add(restCall);
+                            
                         }
                     }
                 }
