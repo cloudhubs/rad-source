@@ -144,6 +144,8 @@ public class RestCallService {
                             // find return type
                             resolveReturnType(restCall, cu, mce, restTemplateMethod);
 
+                            System.out.println("rest-call: --- " + restCall);
+                            
                             // find url
                             restCall.setUrl(findUrl(mce, cid));
 
@@ -200,6 +202,7 @@ public class RestCallService {
     }
 
     private String findUrl(MethodCallExpr mce, ClassOrInterfaceDeclaration cid) {
+    	System.out.println("Start to : FindURL" + mce.toString());
         if (mce.getArguments().size() == 0) {
             return "";
         }
@@ -224,7 +227,7 @@ public class RestCallService {
         	System.out.println("type-exp: isBinaryExpr");
             return resolveUrlFromBinaryExp(exp.asBinaryExpr());
         }
-
+        System.out.println("NO type-exp");
         return "";
     }
 
