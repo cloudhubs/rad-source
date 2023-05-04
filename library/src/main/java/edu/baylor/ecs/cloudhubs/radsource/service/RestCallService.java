@@ -207,14 +207,21 @@ public class RestCallService {
         Expression exp = mce.getArguments().get(0);
         log.debug("url-meta: " + exp.getMetaModel());
         log.debug("url-exp: " + exp.toString());
+        
+        System.out.println("url-meta: " + exp.getMetaModel());
+        System.out.println("url-exp: " + exp.toString());
 
         if (exp.isStringLiteralExpr()) {
+        	System.out.println("type-exp: isStringLiteralExpr");
             return Helper.removeEnclosedQuotations(exp.toString());
         } else if (exp.isFieldAccessExpr()) {
+        	System.out.println("type-exp: isFieldAccessExpr");
             return fieldValue(cid, exp.asFieldAccessExpr().getNameAsString());
         } else if (exp.isNameExpr()) {
+        	System.out.println("type-exp: isNameExpr");
             return fieldValue(cid, exp.asNameExpr().getNameAsString());
         } else if (exp.isBinaryExpr()) {
+        	System.out.println("type-exp: isBinaryExpr");
             return resolveUrlFromBinaryExp(exp.asBinaryExpr());
         }
 
