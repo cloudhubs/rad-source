@@ -200,9 +200,47 @@ public class RestCallService {
         restCall.setReturnType(returnType);
         restCall.setCollection(isCollection);
     }
+    
+    
+    /// TODO: If needed later for better approach - Not tested
+    
+//    Expression result = traverseExpression(exp);
+//
+//    if (result instanceof StringLiteralExpr) {
+//      String finalResult = ((StringLiteralExpr) result).getValue();
+//      System.out.println("RESULTS OF TRAVERSE ==== ");
+//      System.out.println(finalResult);
+//    }
+//    
+//    
+//    private static Expression traverseExpression(Expression expr) {
+//        if (expr instanceof StringLiteralExpr) {
+//          return expr;
+//        } else if (expr instanceof BinaryExpr) {
+//          BinaryExpr binaryExpr = (BinaryExpr) expr;
+//          Expression left = traverseExpression(binaryExpr.getLeft());
+//          Expression right = traverseExpression(binaryExpr.getRight());
+//          String operator = binaryExpr.getOperator().asString();
+//
+//          if (left instanceof StringLiteralExpr && right instanceof StringLiteralExpr) {
+//            String leftString = ((StringLiteralExpr) left).getValue();
+//            String rightString = ((StringLiteralExpr) right).getValue();
+//            return new StringLiteralExpr(leftString + "/" + rightString);
+//          } else if (left instanceof StringLiteralExpr && operator.equals("+")) {
+//            String leftString = ((StringLiteralExpr) left).getValue();
+//            return new BinaryExpr(leftString, right, BinaryExpr.Operator.PLUS);
+//          } else if (right instanceof StringLiteralExpr && operator.equals("+")) {
+//            String rightString = ((StringLiteralExpr) right).getValue();
+//            return new BinaryExpr(left, rightString, BinaryExpr.Operator.PLUS);
+//          }
+//        }
+//
+//        return null;
+//      } 
 
     private String findUrl(MethodCallExpr mce, ClassOrInterfaceDeclaration cid) {
     	System.out.println("Start to : FindURL" + mce.toString());
+    	
         if (mce.getArguments().size() == 0) {
             return "";
         }
@@ -211,8 +249,12 @@ public class RestCallService {
         log.debug("url-meta: " + exp.getMetaModel());
         log.debug("url-exp: " + exp.toString());
         
+        
+       
         System.out.println("url-meta: " + exp.getMetaModel());
         System.out.println("url-exp: " + exp.toString());
+        
+        
 
         if (exp.isStringLiteralExpr()) {
         	System.out.println("type-exp: isStringLiteralExpr");
@@ -225,12 +267,47 @@ public class RestCallService {
             return fieldValue(cid, exp.asNameExpr().getNameAsString());
         } else if (exp.isBinaryExpr()) {
         	System.out.println("type-exp: isBinaryExpr");
-            return resolveUrlFromBinaryExp(exp.asBinaryExpr());
+//        	String[] stringParts = exp.toString().split("+");
+//        	
+//        	if (stringParts.length > 0 && (!stringParts[0].contains("/")) && !stringParts[0].contains("\"")) {
+//        		
+//        	}
+        	
+        	return resolveUrlFromBinaryExpModified(exp.asBinaryExpr());
+//            return resolveUrlFromBinaryExp(exp.asBinaryExpr());
         }
         System.out.println("NO type-exp");
         return "";
     }
 
+    private String resolveUrlFromBinaryExpModified(BinaryExpr exp) {
+    	
+    	String[] stringParts = exp.toString().split("+");
+    	StringBuilder newURL = new StringBuilder();
+    	
+    	if (stringParts.length <= 0) {
+    		return "";
+    	} else {
+    		// The first part is variable, assume it's inside_payment_service_url + "/api/v1/inside_pay_service/inside_payment/drawback/" + userId + "/" + money
+        	if ((stringParts[0].contains("/")) || stringParts[0].contains("\"")) {
+        		newURL.append(stringParts[0]);
+        	}
+        	for (i = 1; i < stringParts.length; i++) {
+        		if ((stringParts[i].contains("/")) || stringParts[i].contains("\"")) {
+        			newURL.append(stringParts[i]);
+        		} else {
+        			newURL.append("/");
+        			newURL.append("{var}");
+        		}
+        	}
+    	}
+    	
+    	System.out.println("URL AFTER: " + newURL.toString());
+    	
+    	return newURL.toString();
+    	
+    }
+    
     private boolean hasRestTemplateImport(CompilationUnit cu) {
         for (ImportDeclaration id : cu.findAll(ImportDeclaration.class)) {
             if (id.getNameAsString().equals("org.springframework.web.client.RestTemplate")) {
