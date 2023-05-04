@@ -292,7 +292,7 @@ public class RestCallService {
         	if ((stringParts[0].contains("/")) || stringParts[0].contains("\"")) {
         		newURL.append(stringParts[0]);
         	}
-        	for (i = 1; i < stringParts.length; i++) {
+        	for (int i = 1; i < stringParts.length; i++) {
         		if ((stringParts[i].contains("/")) || stringParts[i].contains("\"")) {
         			newURL.append(stringParts[i]);
         		} else {
