@@ -282,7 +282,7 @@ public class RestCallService {
 
     private String resolveUrlFromBinaryExpModified(BinaryExpr exp) {
     	
-    	String[] stringParts = exp.toString().split("+");
+    	String[] stringParts = exp.toString().split("\\+");
     	
     	System.out.println("URL PARTS BEFORE: " + stringParts.length);
     	
