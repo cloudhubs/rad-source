@@ -33,6 +33,8 @@ public class RestFlowService {
                 restFlows.addAll(restFlowsForContexts(contextA.getRestCalls(), contextB.getRestEndpoints()));
             }
         }
+        
+        System.out.println("############# Number of Flows = " + restFlows.size());
 
         return restFlows;
     }
@@ -55,7 +57,6 @@ public class RestFlowService {
             }
         }
         
-        System.out.println("############# Number of Flows = " + restFlows.size());
 
         return restFlows;
     }
