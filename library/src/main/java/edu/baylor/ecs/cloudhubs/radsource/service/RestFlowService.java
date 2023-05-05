@@ -16,6 +16,13 @@ public class RestFlowService {
 
     public List<RestFlow> findRestFlows(List<RestEntityContext> restEntityContexts) {
         List<RestFlow> restFlows = new ArrayList<>();
+        
+        System.out.println("############# START Number Endpoint & Calls ###########");
+        for (RestEntityContext contextA : restEntityContexts) {
+        	System.out.println(contextA.getPathToMsRoot() + "    " + contextA.getRestCalls().size() + "     " + contextA.getRestEndpoints().size() );
+        }
+        
+        System.out.println("############# END Number Endpoint & Calls ###########");
 
         for (RestEntityContext contextA : restEntityContexts) {
             for (RestEntityContext contextB : restEntityContexts) {
