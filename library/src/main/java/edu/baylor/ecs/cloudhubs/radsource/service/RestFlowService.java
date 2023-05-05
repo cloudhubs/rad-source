@@ -39,6 +39,7 @@ public class RestFlowService {
 
     private List<RestFlow> restFlowsForContexts(List<RestCall> restCalls, List<RestEndpoint> restEndpoints) {
         List<RestFlow> restFlows = new ArrayList<>();
+        
 
         for (RestCall restCall : restCalls) {
             for (RestEndpoint restEndpoint : restEndpoints) {
@@ -48,11 +49,13 @@ public class RestFlowService {
             	
                 if (restCall.getHttpMethod().equals(restEndpoint.getHttpMethod()) &&
                         (isReturnTypeMatched(restCall, restEndpoint) || isPathMatched(restCall, restEndpoint))) {
-//                	System.out.println("MATCHEEEED = "+ restEndpoint.getHttpMethod() + "  "+ restCall.getUrl());
+                	System.out.println("MATCHEEEED = "+ restEndpoint.getHttpMethod() + "  "+ restCall.getUrl());
                     restFlows.add(new RestFlow(restCall, restEndpoint));
                 }
             }
         }
+        
+        System.out.println("############# Number of Flows = " + restFlows.size());
 
         return restFlows;
     }
